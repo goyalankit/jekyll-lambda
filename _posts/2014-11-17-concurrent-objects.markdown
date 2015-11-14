@@ -6,7 +6,7 @@ comments: true
 categories: os
 ---
 
-Method calls take time whereas method calls by a single thread are always sequential.
+Method calls take time and method calls by a single thread are always sequential.
 
 ### Compositional
 A correctness property P is compositional if, whenever each object in system satisfies P, the system as a whole satisifies P. Basically we can compose objects satisfying a property P to create a more complex system that also satisfies P. For example, Quiescence.
