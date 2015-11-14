@@ -1,14 +1,14 @@
 # Site settings
 title: notez
 author: Ankit Goyal
-author_avatar: https://gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=50
-email: alias@domain.tld
+author_avatar: http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50
+email: me@goyalankit.com
 description: Blog about whatever.
 baseurl: "" # optional
 url: "https://foo_bar.github.io"
-#twitter_username: foo_bar
-#github_username: foo_bar
-github_repo: foo_bar/foo_bar.github.io
+twitter_username: _goyalankit
+github_username: goyalankit
+github_repo: goyalankit/os
 #google_analytics: UA-80085-YOUR-ID
 # disqus: disqus-id
 
