@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>notez</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Blog about whatever.">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link active">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div>
+
+  	
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/2014/11/17/concurrent-objects/">Concurrent Objects</a></h1>
+	    <p class="entry-meta">
+		    Nov 17, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Method calls take time whereas method calls by a single thread are always sequential.</p>
+
+<h3>Compositional</h3>
+
+<p>A correctness property P is compositional if, whenever each object in system satisfies P, the system as a whole satisifies P. Basically we can compose objects satisfying a property P to create a more complex system that also satisfies P. For example, Quiescence.</p>
+
+<hr>
+
+<h3>Quiescent Consistency</h3>
+
+<p>Principles:</p>
+
+<ol>
+<li>Method calls should appear in one-in-a-time sequential order. --| <strong>trivial</strong> |</li>
+<li>Method calls separated by a period of quiescence should appear to take effect in real-time order.</li>
+</ol>
+
+	  		
+	  		<p><a href="/os/2014/11/17/concurrent-objects/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/papi/hpc/2014/11/12/papi-native-hardware-counters/">Papi native hardware counters</a></h1>
+	    <p class="entry-meta">
+		    Nov 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h3>Check for the available native hardware counters:</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ papi_native_avail
+</code></pre></div>
+<h3>Sample code to get the values for native hardware counters</h3>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="cp">#include &lt;papi.h&gt;</span>
+
+<span class="cp">#define MAX_COUNTERS 256</span>
+<span class="kt">int</span> <span class="n">rozmer</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">events</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:WRITE&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:ACCESS&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:READ&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:PREFETCH&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:MISS&quot;</span><span class="p">,</span>
+    <span class="s">&quot;HW_PRE_REQ:L1D_MISS&quot;</span><span class="p">,</span>
+    <span class="c1">//&quot;L1-DCACHE-LOADS&quot;</span>
+<span class="p">};</span>
+
+<span class="cp">#define NUMCOUNTERS 6</span>
+<span class="kt">void</span> <span class="nf">compute</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">EventCode</span><span class="p">,</span> <span class="n">retval</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">EventSet</span> <span class="o">=</span> <span class="n">PAPI_NULL</span><span class="p">;</span>
+    <span class="kt">long</span> <span class="kt">long</span> <span class="n">PAPI_Counters</span><span class="p">[</span><span class="n">MAX_COUNTERS</span><span class="p">];</span>
+</code></pre></div>
+	  		
+	  		<p><a href="/papi/hpc/2014/11/12/papi-native-hardware-counters/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/11/11/fast-paxos/">Fast Paxos</a></h1>
+	    <p class="entry-meta">
+		    Nov 11, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>Algorithm executes multiple rounds.</li>
+<li>An acceptor votes to accept atmost one value in a single round.</li>
+<li>Goal: Achieve consistency by ensuring that different values are not chosen in different rounds.</li>
+<li>Note that rounds can run concurrently, may be skipped altogether.</li>
+</ul>
+
+<h2>Accepter</h2>
+
+<p>State maintained by accepter:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># state maintained by acceptor
+rnd[a]
+vrand[a]
+vval[a]
+</code></pre></div>
+<ul>
+<li><code>rnd[a]</code> - highest numbered round in which a participated, initially 0.</li>
+<li><code>vrand[a]</code> - highest numbered round in which a has cast a vote, initially 0.</li>
+<li><code>vval[a]</code>- The value a voted to accept in round <code>vrand[a]</code>; it&#39;s initial value is irrelevant. can be inferred using <code>vrand[a] == 0</code></li>
+</ul>
+
+	  		
+	  		<p><a href="/2014/11/11/fast-paxos/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/ruby/2014/11/06/ruby-notes/">Ruby Notes</a></h1>
+	    <p class="entry-meta">
+		    Nov 6, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>Lambdas vs Procs</h2>
+
+<blockquote>
+<p>Both are proc objects</p>
+</blockquote>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">l</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span><span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+<span class="nb">p</span> <span class="o">=</span> <span class="nb">proc</span>   <span class="p">{</span><span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+
+<span class="n">l</span> <span class="c1"># =&gt; #&lt;Proc:0x007ff16389da58@-:1 (lambda)&gt;</span>
+<span class="nb">p</span> <span class="c1"># =&gt; #&lt;Proc:0x007ff16389da30@-:2&gt;</span>
+</code></pre></div>
+<blockquote>
+<p>Return behaves differently</p>
+</blockquote>
+
+<p><strong>lambda returns from the context of lambda only.</strong></p>
+
+	  		
+	  		<p><a href="/ruby/2014/11/06/ruby-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/">Spanner: Google's Globally Distributed Database</a></h1>
+	    <p class="entry-meta">
+		    Nov 6, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>Spanner</strong>: Database that shards data across many set of Paxos state machines in data centers spread accross the world.</p>
+
+<h3>Time API</h3>
+
+<p>Sawtooth peak when executing, comes back when synced from server.</p>
+
+<p>Smax: largest timestamp till relpica is up to date.</p>
+
+<h3>Leases</h3>
+
+<p>leaders participate in local and distributed transactions. So it&#39;s better to have leaders for long time. Auto released after expiration.</p>
+
+<p>extend the lease:
+- leader can ssign timestamp to lease in future.
+- leader can try to extend it&#39;s lease to make sure it&#39;s present when transaction happens.</p>
+
+	  		
+	  		<p><a href="/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/map-reduce/os/2014/11/06/map-reduce/">map reduce</a></h1>
+	    <p class="entry-meta">
+		    Nov 6, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>map</strong>: processes a key/value pair to generate a set of intermediate key/value pairs.</p>
+
+<p><strong>reduce</strong>: merges all intermediate values associated with same intermediate keys.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">map    (k1, v1)       -&gt; list(k2, v2)
+reduce (k2, list(v2)) -&gt; list(v2)
+</code></pre></div>
+<p>All the mappers have to finish before reduces can end.</p>
+
+	  		
+	  		<p><a href="/map-reduce/os/2014/11/06/map-reduce/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/">Paxos Notes</a></h1>
+	    <p class="entry-meta">
+		    Oct 29, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: Paxos Made Practical - David Mazieres</p>
+
+<p><strong>Paxos</strong> is a simple protocol tat a group of machines in a distributed system can use to agree on a value proposed by a member of the group.</p>
+
+<p>If it terminates, the protocol reaches consensus even if the network was inreliable  and mutiple machines simultaneously tried to propose different values.</p>
+
+<p>The Basic idea is that each proposal has a unique number.</p>
+
+	  		
+	  		<p><a href="/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/make/shell/2014/10/27/make-notes/">Make notes</a></h1>
+	    <p class="entry-meta">
+		    Oct 27, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Makefile basic structure</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">target: <span class="nb">source</span>
+<span class="nb">  command</span>
+</code></pre></div>
+<p>PHONY prevents <code>rm</code> to be executed each time, <code>make clean</code> is called. Consider a case when there are no <code>.o</code> files, <code>make clean</code> will still execute <code>rm</code> otherwise.</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">.PHONY
+clean:
+  rm *.o
+</code></pre></div>
+<p>Get the dependencies source for a given file.</p>
+
+	  		
+	  		<p><a href="/make/shell/2014/10/27/make-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/concurrency/2014/10/23/concurrency/">concurrency</a></h1>
+	    <p class="entry-meta">
+		    Oct 23, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>Determinism doesn&#39;t effectively solves the problem.</li>
+<li>Symbolic execution</li>
+</ul>
+
+<h2>Transactions and Concurrency</h2>
+
+<h3>ACID</h3>
+
+<p><strong>Atomicity:</strong> All or nothing. Log to clean if system fails. Output commit -&gt; you are screwed.
+<strong>Consistency:</strong> Internal consistency of the database.
+<strong>Isolation:</strong> Executes if it were running along.
+<strong>Durability:</strong> Results will not be lost.</p>
+
+<p>Memory Transactions: no guarantee, what if power goes down.</p>
+
+	  		
+	  		<p><a href="/os/concurrency/2014/10/23/concurrency/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linking/compilers/2014/10/17/static-and-dynamic-linking/">static and dynamic linking</a></h1>
+	    <p class="entry-meta">
+		    Oct 17, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<div class="highlight"><pre><code class="language-C" data-lang="C"><span class="c1">// add.h</span>
+<span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+
+<span class="c1">// sub.h</span>
+<span class="kt">int</span> <span class="nf">sub</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</code></pre></div>
+<p>Create the corressponding c files.</p>
+<div class="highlight"><pre><code class="language-C" data-lang="C"><span class="c1">// add.c</span>
+<span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// sub.c</span>
+<span class="kt">int</span> <span class="nf">sub</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+	  		
+	  		<p><a href="/linking/compilers/2014/10/17/static-and-dynamic-linking/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/process/notes/2014/10/15/process-address-space/">process address space</a></h1>
+	    <p class="entry-meta">
+		    Oct 15, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>On IA-32 systems with 2^32 = 4GiB, the address space is usually split in 3:1 ratio. The kernel is assied 1GiB, while 3GiB is available to each userspace process.</li>
+<li>The contents of kernel address space are always same regardless of which user process is active.</li>
+</ul>
+
+<h2>Layout of the Process Address Space</h2>
+
+<ol>
+<li><strong>text segment</strong>: binary code of the code currently running.</li>
+<li>code for dynamic libraries.</li>
+<li>heap where global variables and dynamically generated data are stored.</li>
+<li>stack used to store local variables and to implement function calls.</li>
+<li>Sections with environment variables and command-line arguments.</li>
+<li>Memory mappings that map the contents of files into the virtual address space.</li>
+</ol>
+
+<p>Each process has <code>mm_struct</code> instance that can be accessed by task structure.</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/">program loading and memory mapping</a></h1>
+	    <p class="entry-meta">
+		    Oct 14, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2><code>arch_prctl(ARCH_SET_FS, addr)</code></h2>
+
+<p>From man page:</p>
+
+<blockquote>
+<p>set architecture specific thread state</p>
+</blockquote>
+
+<ul>
+<li><p><code>ARCH_SET_FS</code>: set the 64-bit base address for the <code>FS</code> register to <code>addr</code></p>
+
+<p>Earlier kernel used to store an array indexed by threadid containing address of thread space, however now it sets the FS register for threads local storate.
+<code>GS</code> is used for kernel threads storage pointer whereas <code>FS</code> is used for userspace threads.</p></li>
+</ul>
+
+	  		
+	  		<p><a href="/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/java/basics/2014/10/13/java-notes/">java notes</a></h1>
+	    <p class="entry-meta">
+		    Oct 13, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>Good time library: JodaTime</li>
+<li>Logging: Log4j</li>
+</ul>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/10/09/device-drivers/">Device Drivers</a></h1>
+	    <p class="entry-meta">
+		    Oct 9, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Device driver used to interact with device. Major number is used to identify device driver.</p>
+
+<ul>
+<li>Character Device: writes and reads character by character. Operates in blocking way (synchronous, user must wait for completion). More common.</li>
+<li>Block Device: write/read block by block (larfer).</li>
+</ul>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/filesystem/gfs/os/2014/10/09/google-file-system/">Google File System</a></h1>
+	    <p class="entry-meta">
+		    Oct 9, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: http://static.googleusercontent.com/media/research.google.com/en/us/archive/gfs-sosp2003.pdf <br/>
+Published: 2003</p>
+
+<hr>
+
+<h2>Design Constraints</h2>
+
+<ol>
+<li>Component failures are the norm rather than exception. FS consists of thousands if commodity parts and is accessed by comparable number of clients.</li>
+<li>Files are huge by traditional standards. Multi-GB files are common. Billions of approximately KB-sized files.</li>
+<li>Most files are mutated by appending new data rather than overwriting existing data.</li>
+<li>Co-designing the applications and the file system API benifits the overall system by increasing flexibility.</li>
+</ol>
+
+<h2>Architecture</h2>
+
+<p>GFS consists of a <strong>single master</strong> and multiple <strong>chunkservers</strong> and is accessed by multiple clients.</p>
+
+<h2>Class Notes:</h2>
+
+<p>Problem in datacenters: failures.</p>
+
+<p><strong>Master</strong>: Single point of failure, master has log of operations.</p>
+
+<p>Lease: soft state.</p>
+
+<p>Revoke:</p>
+
+<ol>
+<li>wait</li>
+<li>contact server</li>
+</ol>
+
+<hr>
+
+<p>Snapshot:</p>
+
+<ol>
+<li>revoke lease</li>
+<li>copy-on-write</li>
+</ol>
+
+<p>snapshot on large files:-&gt; copy on writes.</p>
+
+<p>Contact replicas and tell them to make local copies. Update the metadata to point to the individual chunks.</p>
+
+<ul>
+<li>distributed the consistency to both application libraries.</li>
+<li>unique identifier could be a problem.</li>
+</ul>
+
+<p>chunks metadata at master are not persisted.</p>
+
+<p>Appends are ordered:</p>
+
+<p>1) lease and primary
+2) primary serial #&#39;s</p>
+
+<p>Master doesn&#39;t know about the namespaces either, it is also stored on chunkservers.</p>
+
+<ul>
+<li>No hardlinks/softlinks</li>
+<li>absolute paths</li>
+<li>no datastructure representing directories like inodes</li>
+<li>no datastructure to enumerate contents of one directory</li>
+</ul>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/10/02/memory-resource-management-in-vmware-esx-server/">Memory Resource Management in VMWare ESX Server</a></h1>
+	    <p class="entry-meta">
+		    Oct 2, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: https://www.usenix.org/legacy/event/osdi02/tech/waldspurger/waldspurger.pdf<br/>
+Published: 2002</p>
+
+<p>VMWare ESX Server is a thin layer designed to multiplex hardware resources efficiently among virtual machines running unmodified commodity operating systems.</p>
+
+<h3>Memory Virtualization</h3>
+
+<p>All guest operating systems expect a zero-phased physical address space as provided by real hardwares. ESX Server gives this illusion by adding an extra level of translation. In this mechanism, Virtual addresses are mapped to &quot;Physical Address&quot; (provided by ESX Server) which are further mapped to Machine addresses (actual memory on chip). Seperate shadow pages tables, which contains virtual to machine page mappings for use by the processor.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"> -----------------      PMAP in ESX    ------------------     Page Table in OS   -----------------
+| Machine Address |   &lt;-------------  | Physical Address |  &lt;-----------------  | Virtual Address |
+ -----------------                     ------------------                        -----------------
+</code></pre></div>
+<h4>Reclamation Mechanisms</h4>
+
+<p>ESX Server usually overcommits memory and needs a reclamation mechanism to reclaim memory from one or more virtual machines.</p>
+
+<h4>Balooning</h4>
+
+<p>A small balloon module is loaded into the guest OS as a pseudo-device driver or kernel service. It doesn&#39;t have any external interface. When ESX server wants to reclaim memory, it instructs the driver to &#39;inflate&#39; by allocating pinned physical pages within the VM. This creates a memory pressure inside the VM and guest OS starts reclaiming memory to satisfy drivers request. The balloon driver communicates the physical page number to ESX server, which may then recalim the corressponding machine page.</p>
+
+<ul>
+<li>Technically guest os shouldn&#39;t touch pages allocated to balloon driver, however ESX server doesn&#39;t rely on guest os correctness. It annotates its pmap entry and deallocates its associated MPN (machine page number). any subsequent attempt to access that memory will generate a page fault that is handled by the server.</li>
+</ul>
+
+<h4>Demand Paging</h4>
+
+<p>ESX server preferentially uses ballooning to reclaim memory, treating as a common-case optimization if ballooning is not possible or insufficient, memory is reclaimed by paging out to an ESX Server swap area on disk, without any guest involvement.</p>
+
+<p>A randomized page replacement policy is used so that higher level page semantics are not effected.</p>
+
+<h4>Sharing Memory - Content-Based page sharing</h4>
+
+<p>ESX server maintains a hashmap of pages where key is hash summarizing the content in page. If the hash value for new page matches an existing page, then the whole contents of the page are compared and if they match a reference count is incremented and the page is shared. Any attempt to write to a shared page will generate a fault, transparently creating a new page. (COW - copy on write)</p>
+
+<p>If no match is found the page is hashed but it is not marked as COW. Instead it is tagged as a special hint entry. On any future match, contents of the hint page are rehashed and checked to see if the page has been modified. If the hash is still valid, a full comparison is performed and page is shared (marked as COW now).</p>
+
+<h4>Share based allocation</h4>
+
+<p>Resource rights are encapsulated by shares, which are owned by clients that consume resources. Traditionally VMs that have more shares are allocated more resources nad in case of reclamation, the VMs with lower shares are used to reclaim memory. It may happen that VMs with larger share are not using the memory and smaller VMs are the one that can actually benifit from the memory. So we don&#39;t have good resource utilization here.</p>
+
+<p>ESX server introduces the concept of idle memory tax which charges more for the idle pages than the pages that are activally used.</p>
+
+<h4>Measuring Idle memory</h4>
+
+<p>ESX server uses a statistical sampling approach to obtain aggregate VM working set estimates directly, without any guest involvement. At the start of sampling period, a small number of the vm&#39;s &quot;physical&quot; pages are selected and their corresponding TLB enteries and MMUU state is invalidated. When VM access those pages, it leads to a fault and a use of the page is registered. At the end of period fraction f of memory actively accessed by the vm can be calculated by simply f = t/n (t page faults out of n invalidations)</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/26/writing-my-own-networked-file-system/">writing my own networked file system</a></h1>
+	    <p class="entry-meta">
+		    Sep 26, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>https://github.com/goyalankit/os/blob/master/lab2/netfs.c</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linux/filesystem/2014/09/25/log-structured-file-system/">log structured file system</a></h1>
+	    <p class="entry-meta">
+		    Sep 25, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>In LFS, log is the only structure on disk. The log is divided into segments (to maintain space for large files) where data is written sequentially. <strong>segment cleaner</strong> compresses the information from heavily fragmented code.</p>
+
+<ul>
+<li>Log also stores indexing information so that the files can be read back with efficiency comparable to current file systems.</li>
+</ul>
+
+<p>LFS is based on assumption that files are cached in main memory, so the majority of traffic write traffic which is efficient since we are writing sequentially and eliminating seeks in the disk.</p>
+
+<ul>
+<li>Sprite LFS uses 60-75% of the disk bandwith where as unix file system uses about 5-10% since most of the time is spent in seeking.</li>
+</ul>
+
+<hr>
+
+<p>The main challenge of LFS is to ensure that there are always large extents of free space available for writing new data. Large extents called <em>segments</em> are used, where segment cleaner continually regenerates empty segments by compressing the live data from heavily fragmented segements.</p>
+
+<blockquote>
+<p>File system is governed by two basic building blocks: technology and workload.</p>
+</blockquote>
+
+<p>Three components that are significant for file system design:</p>
+
+<ol>
+<li><strong>Processors</strong>- getting faster and fater, putting more pressure on memory</li>
+<li><strong>Main Memory</strong> - Can cache files and change the predominant type of data, like more writes than reads, so you can optimize you FS for writes</li>
+<li><strong>Disks</strong> - well that&#39;s where you store your data, they have two components:
+
+<ul>
+<li>Transfer Bandwith -  can be improved using disk arrays and parallel-head disks.</li>
+<li>Access Time - depends on mechanical head (at the time of publishing).</li>
+</ul></li>
+</ol>
+
+<hr>
+
+<ul>
+<li>Unix file system writes metadata structures such as directories and inodes synchronously, which is not good for lot of small files.</li>
+<li>LFS buffers a sequence of file system changes in the file cache and writes them sequentailly in a single disk operation.</li>
+</ul>
+
+<h2>Key Issues</h2>
+
+<ol>
+<li>Information Retrieval  - uses inodes and maintains a inode map which contains the location of inodes.</li>
+<li>Large free space</li>
+</ol>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/xen/2014/09/23/xen-the-art-of-virtualization/">xen - the art of virtualization</a></h1>
+	    <p class="entry-meta">
+		    Sep 23, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>x86 virtualization challenges</h2>
+
+<ul>
+<li>EFLAGS register has interrupt enable flag(IF). If the kernel is being virtualized it doesn&#39;t have privilage to enable interrupts. Kernel calls pushf and popf all over the place.</li>
+<li>Register cr3 points to the base of page table. Hardware MMU will read cr3 on page faults if the virtual addressing is enabled. VMM can&#39;t trust OS, solved by either shadow page tables (ESX Server) or allowing updates after verification (XEN)</li>
+<li>Untagged TLB means frequent flushes. Addressed with hardware translation.</li>
+</ul>
+
+<h3>Consider page fault</h3>
+
+<p>ESX Server</p>
+<div class="highlight"><pre><code class="language-Ruby" data-lang="Ruby"><span class="no">Guest</span> <span class="ss">application</span><span class="p">:</span> <span class="n">refers</span> <span class="n">to</span> <span class="n">unmapped</span> <span class="n">memory</span> <span class="n">address</span><span class="o">.</span>
+<span class="ss">Hardware</span><span class="p">:</span> <span class="no">TRAP</span><span class="o">!</span> <span class="n">set</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="o">.</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="nb">trap</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="no">Figure</span> <span class="n">out</span> <span class="n">which</span> <span class="n">guest</span> <span class="no">OS</span><span class="p">,</span> <span class="n">clear</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="p">,</span> <span class="n">check</span> <span class="n">shadow</span> <span class="n">page</span> <span class="n">table</span> <span class="p">(</span><span class="ow">or</span> <span class="n">software</span> <span class="no">TLB</span> <span class="n">cache</span><span class="p">),</span> <span class="k">if</span> <span class="n">page</span> <span class="ow">not</span> <span class="n">resident</span><span class="p">,</span> <span class="n">set</span> <span class="n">up</span> <span class="nb">trap</span> <span class="n">registers</span> <span class="k">for</span> <span class="n">guest</span> <span class="no">OS</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="n">that</span> <span class="n">guest</span> <span class="no">OS</span><span class="s1">&#39;s trap handler.</span>
+<span class="s1">Guest OS: Read cr2 to find the faulting address</span>
+<span class="s1">HW: TRAP! You can;t read the cr2; set privileged bit; jump to VMM trap handler.</span>
+<span class="s1">VMM: Read the cr2 and put faulting address it into guest OS register; clear privileged bit.</span>
+<span class="s1">Guest OS: Allocate physical page and write page table entry from VA -&gt; PA</span>
+<span class="s1">HW: TRAP! you can&#39;</span><span class="n">t</span> <span class="n">write</span><span class="p">(</span><span class="no">READ</span><span class="o">-</span><span class="no">ONLY</span> <span class="n">access</span><span class="p">)</span> <span class="n">to</span> <span class="n">page</span> <span class="n">table</span><span class="o">.</span> <span class="n">set</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="no">Allocate</span> <span class="n">a</span> <span class="n">page</span> <span class="n">of</span> <span class="n">machine</span> <span class="n">memory</span><span class="p">,</span><span class="n">record</span> <span class="no">PA</span><span class="o">-&gt;</span><span class="no">MA</span> <span class="n">mapping</span> <span class="ow">and</span> <span class="n">install</span> <span class="n">it</span> <span class="k">in</span> <span class="n">shadow</span> <span class="n">page</span> <span class="n">table</span><span class="p">;</span> <span class="n">clear</span> <span class="n">privileged</span> <span class="n">bit</span><span class="p">;</span> <span class="k">return</span> <span class="n">to</span> <span class="n">guest</span> <span class="no">OS</span> <span class="nb">trap</span> <span class="n">handler</span><span class="o">.</span>
+<span class="no">Guest</span> <span class="ss">OS</span><span class="p">:</span> <span class="n">everything</span> <span class="n">worked</span> <span class="n">fine</span><span class="o">.</span> <span class="sb">`iret`</span> <span class="no">Clear</span> <span class="n">the</span> <span class="n">privileged</span> <span class="n">bit</span> <span class="ow">and</span> <span class="k">return</span> <span class="n">to</span> <span class="n">guest</span> <span class="n">handler</span>
+<span class="ss">HW</span><span class="p">:</span> <span class="no">TRAP</span><span class="o">!</span> <span class="p">(</span><span class="n">you</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">get</span> <span class="n">to</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">priveleged</span> <span class="n">bit</span><span class="p">);</span> <span class="n">set</span> <span class="n">privileged</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="sb">`iret`</span> <span class="n">to</span> <span class="n">guest</span> <span class="n">application</span>
+</code></pre></div>
+<h3>XEN</h3>
+
+<p><strong>For each privilage level, a separate stack is maintained.</strong></p>
+
+<p>Guest OS runs in Ring 1, Application runs in Ring 4 and VMM runs in Ring 0.</p>
+
+<p>When application is executing it has its own stack in Ring 4, now when we have a page fault, hardware traps and calls the trap handler. Trap handler is directly registered by Guest OS (though validated by XEN). Trap handeling code runs in Ring 1 (guest OS)</p>
+
+<h4>Memory:</h4>
+
+<ul>
+<li>Guest OSes allocates and manage hardware page tables.</li>
+<li>Guest OS allocates and registers with xen giving away its write privileges.</li>
+<li>All updates (using hyper calls) need to be validated by XEN.</li>
+<li>XEN registers page tables directly with MMU.</li>
+<li>To aid validation frames are marked: page directory, page table, local descriptor table, global des. tab., Writable.</li>
+</ul>
+
+<h4>CPU:</h4>
+
+<ul>
+<li>basic assumption: os is most privileged., rings help.</li>
+<li><p>Privileged instructions are paravirtualized by requiring them to be validated and executed within xen. Any guest os attempt to execute privileged instruction: failed by processor (silently or trap).</p></li>
+<li><p>Exceptions and trap are virtualized straightforwardly. A table describing the handler for each type is registered with XEN for validation. exception stack frames are unmodified in paravirt.</p></li>
+<li><p>Excepions can be directly handled by hardware, but page faults need to go through XEN.</p></li>
+<li><p>Page fault handler would read cr2(not possible), copy it to the extended stack frame.</p></li>
+<li><p>On page fault, xen copies stack frame to guest os and return control to registered handler.Trap handlers (guest OS) are in Ring 1. CR2 is in ring 0. M2P</p></li>
+</ul>
+
+<h4>Device I/O</h4>
+
+<ul>
+<li>clean and simple abstractions.</li>
+<li>interrupts -&gt; lightweight event delivery mechanism.</li>
+</ul>
+
+<h4>Control and Management:</h4>
+
+<ul>
+<li>Hypervisor will be involved in scheduling but there is no need to be involved in high level details such as how to share the CPU among domains. or what kind of packets a domain can transfer.</li>
+<li>Hypervisor provides control operations through an interace accessible from authorized domains.</li>
+<li>Domain 0 is created at boot time and has access to control interface and is responsible for application level management software.</li>
+<li>Control interface provides the ability to create/destrot domains, their scheduling parameters, physical memory allocations and access they are given to physical resources like physical disk and network devices.
+*</li>
+</ul>
+
+<h3>Class Notes:</h3>
+
+<p>Domain 0 - is a VM. Device drivers are put inside domain 0.</p>
+
+<p>write a block of data ==&gt; goes to VMM ==&gt; goes to VM (converting it to actual blocks).</p>
+
+<hr>
+
+<p>Not XEN RELATED
+Hardware virtualization
+system calls and page faults don&#39;t trap.</p>
+
+<p>VA - PT - PA</p>
+
+<p>VMWare
+VA - Shadow PT - MA
+PA - PMAP - MA</p>
+
+<p>Shadow tables - per guest application. Since it maps from VA.
+PMAP is per guest OS</p>
+
+<p>Extended page table - per VM or per guest.</p>
+
+<p>A VM has well defined PA space</p>
+
+<p>Two ways of VMM</p>
+
+<p>Build it into operating system.
+OS like explicitly running.</p>
+
+<p>ESX server(special purpose VMM) vs ESX workstation (general purpose os)</p>
+
+<p>Double Paging - two different pieces of software working on it.</p>
+
+<p>Force guest OS to use it&#39;s own paging algorithm</p>
+
+<h4>information on exceptions and interrupt handlers</h4>
+
+<p>http://cse.unl.edu/~goddard/Courses/CSCE351/IntelArchitecture/IntelInterupts.pdf</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/20/scheduling-basics/">scheduling basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 20, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>Scheduling policy in Linux Kernel</h2>
+
+<p>source: <a href="http://idak.gop.edu.tr/esmeray/UnderStandingKernel.pdf">Understanding the Linux Kernel</a>, Chapter 7</p>
+
+<p>CPU time is divided into slices, one for each runnable process. Time sharing relies on timer interrupts and is thus transparent to processes.</p>
+
+<p>For scheduling processes are traditionally classified as: I/O-bound or CPU-bound.</p>
+
+<p>Another classification distinguishes three kind of processes:</p>
+
+<ol>
+<li><p><strong>Interactive Processes</strong>: Constantly interact with users, these programs spend lot of time waiting for keypress and should be woekn up quickly when input is received. e.g., shell, text editors, etc.</p></li>
+<li><p><strong>Batch Processes:</strong> Not much user interaction and often run in background. Often penalized by the scheduler. e.g., compilers, database search engines and scientific computations.</p></li>
+<li><p><strong>Real-time process:</strong> Stringent scheduling requirements, should never be blocked due to low priority processes. e.g., video and sound applications, controllers collecting data from sensors.</p></li>
+</ol>
+
+<h2>Process Preemption:</h2>
+
+<p>Linux processes are preemptable (both in Kernel or User mode). When a process enters TASK_RUNNING state, the kernel checks if its dynamic priority is greater than the priority of the currently running process. If it is, execution of <code>current</code> is interrupted and scheduler is invoked to select another process.</p>
+
+<p>e.g., 2 programs - text editor and compiler. Compiler is running, user presses a key, an interrupt is raised and the kernel wakes up the editor process. Kernel also checks that the dynamic priority of text editor program is higher than compiler, so it sets <code>TIF_NEED_RESCHED</code> for the current process (thus forcing the scheduler when interrupt handler reutrns.). As the interrupt handler returns, scheduler is invoked and the context switch happens. Note: preempted process is not suspended, it remains in TASK_RUNNING state.</p>
+
+<h2>Quantum size</h2>
+
+<p>If quantum is too short, context switches get expensive. If it&#39;s too long, it may make system unresponsive. e.g., two users launch process together, one of them is interactive and other is batch. If scheduler schedules batch first initially, other process becomes unresponsive.</p>
+
+<p><em>Note that too long a quantum doesn&#39;t degrades the response time of interative processes in general due to process preemption.</em></p>
+
+<p>The choice of quantum is usually a compromise and Linux chooses a duration as long as possible, while keep a good response time.</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/15/practical-cgroups/">practical cgroups</a></h1>
+	    <p class="entry-meta">
+		    Sep 15, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h4>To list cgroups of a particular process (say PID= 16455)</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ cat /proc/16455/cgroup
+</code></pre></div>
+<p>Example Output:
+```sh</p>
+
+<h1>PID = 16455</h1>
+
+<p>goyal@fyra:/sys/fs/cgroup$ cat /proc/16455/cgroup</p>
+
+<p>11:name=systemd:/user/1002.user/5.session
+10:hugetlb:/user/1002.user/5.session
+9:perf_event:/user/1002.user/5.session
+8:blkio:/user/1002.user/5.session
+7:freezer:/user/1002.user/5.session
+6:devices:/user/1002.user/5.session
+5:memory:/user/1002.user/5.session
+4:cpuacct:/user/1002.user/5.session
+3:cpu:/user/1002.user/5.session
+2:cpuset:/
+```</p>
+
+<h4>Mount existing cgroup hierarichies onto file system</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">mkdir /sys/fs/cgroup/cg1
+</code></pre></div>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linux/cgroups/2014/09/15/cgroup-basics/">cgroup basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 15, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: https://www.kernel.org/doc/Documentation/cgroups/cgroups.txt</p>
+
+<h1>CGROUPS</h1>
+
+<p>Control <strong>Groups</strong> provide a mechanism for aggregation/participating sets of tasks, and all their future children, into hierarchical groups with specialized behaviour.</p>
+
+<hr>
+
+<h1>Definitions</h1>
+
+<h3>cgroup</h3>
+
+<p>A <strong>cgroup</strong> associates a set of tasks with a set of parameters for one or more subsystems.</p>
+
+<p>Term              | Example
+------------------|---------
+Set of Tasks      | process ids
+Set of parameters | 1 or 2 CPUs
+Subsystem         | CPUSET, MEMORY % or nodes.</p>
+
+<hr>
+
+<h3>subsystem</h3>
+
+<p>A <strong>subsystem</strong> is a module that makes use of the task grouping facilities provided by cgroup to treat group of tasks in particular ways.</p>
+
+<ul>
+<li>c<code>**group**</code> provides the grouping of tasks with a set of parameters.</li>
+</ul>
+
+<p>A subsystem is typically a <code>&quot;resource controller&quot;</code> that schedules a resource or applies per-cgroup limits. But it may be anything that wants to act on a group of processes e.g. a virtualization subsystem.</p>
+
+<h3>Hierarchy</h3>
+
+<p>A <strong>hierarchy</strong> is a set of cgroups arranged in a tree, such that every task in the system is in exactly one of the cgroups in the hierarchy, and a set of subsystems; each sub-system has system specific state attached to each cgroup in the hierarchy. Each hierarchy has an instance of the cgroup virtual filesystem associated with it.</p>
+
+<p>Rule 1. A single hierarchy can have one or more subsystems attached to it.</p>
+
+<p>Example: You create a single hierarchy for memory and cpu. It&#39;s good if you have one to one mapping. You can have:</p>
+
+<ol>
+<li><code>/cg1</code>: 40% memory, 60% CPU</li>
+<li><code>/cg2</code>: 60% memory, 40% CPU</li>
+</ol>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule1.png" width="500"></p>
+
+<p>Rule 2: Any single subsystem (such as cpu) subsystem cannot be attached to more than one hierarchy if one of those hierarchies has a different subsystem attached to it already.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule2.png" width="500"></p>
+
+<p>Rule 3: A task can belong to only one cgroup in a hierarchy. All tasks on a system by default are member of default cgroup of that hierarchy, which is known as root cgroup.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule3.png" width="500"></p>
+
+<p>Rule 4: Any process that forks itself creates a child task. By default child task inherits the cgroup membership of its parent but can be moved to different cgroups as needed.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule4.png" width="500"></p>
+
+<p>source: https://access.redhat.com/documentation/en-US/Red<em>Hat</em>Enterprise<em>Linux/6/html/Resource</em>Management<em>Guide/sec-Relationships</em>Between<em>Subsystems</em>Hierarchies<em>Control</em>Groups<em>and</em>Tasks.html</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/12/precise-cache-miss-analysis/">Precise Miss Analysis for Program Transformation with Caches of Arbitrary Associativity</a></h1>
+	    <p class="entry-meta">
+		    Sep 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>Source</strong>: http://mrmgroup.cs.princeton.edu/papers/ghosh_asplos98.pdf <br/>
+<strong>Published</strong>: 1998</p>
+
+<p>Currently the gap between memory and processor is addressed by compile- and programmer- applied optimizations like matrix blocking, data structure padding and other program transformations.</p>
+
+<p>This paper defined a CME (cache miss equation framework) which expresses memory references and cache conflict behavious in terms of set of equations.</p>
+
+<p>Two main approaches to automatically improve data locality for loop-oriented programs:</p>
+
+<ol>
+<li><strong>Loop nest restructuring</strong> - <em>includes</em> permutation, tiling (parition loop space into chunks), fusion are used to reorder access patterns. These transformation have usually considered capacity misses in the past, however there could be conflict misses which are difficult to identify and are highly sensitive to problem size and base addresses.</li>
+<li><strong>data layout optimizations</strong> - padding to the data structures.</li>
+</ol>
+
+<hr>
+
+<p>CMEs are a system of <strong>linear Diophantine equations</strong></p>
+
+<p>Assumptions:</p>
+
+<ul>
+<li>Loops are assumed to be normalized, such that step value is 1.</li>
+<li>Consider only perfectly nested loop and some imperfectly nested loop if they have one block between the nests.</li>
+<li>Loops contain no conditional statements.</li>
+<li>All load/store inside loop nest belong only to array.</li>
+</ul>
+
+<h3>Cache Miss Equations</h3>
+
+<h4>Cold Cache Misses</h4>
+
+<ol>
+<li>Either the first access along the direction of vector.</li>
+<li>accesses that have just crossed a memory line boundary along the direction of vector.</li>
+</ol>
+
+<h4>Replacement Miss Equations</h4>
+
+<ol>
+<li>Example: for an access stream - Ra, Rb, Ra. A conflict clearly occurs in direct mapped cache if Ra and Rb maps to same cache line.</li>
+</ol>
+
+<p>This happens:
+<code>
+Memory_Address_of_Ra = Memory_Address_of_Rb + n * Cache Size + Line_Size_Range
+</code></p>
+
+<p>Roughly a conflict occurs if memory addresses accessed differs by multiples of cache size.</p>
+
+<p>In case of k-way set associative cache, a miss occurs if between consecutive access to a memory line, at least k other accesses occur to distinct memory lines that map to the same cache set.</p>
+
+<h3>Algorithm</h3>
+
+<ol>
+<li>Find all reuse vectors along an iteration point.</li>
+<li>Order all reuse vectors in lexicographical order.</li>
+<li>Find potential conflict points: p = i - r</li>
+<li>Solve CME equations for each reuse vector and the solution at a point could belong to cold miss or conflict miss.</li>
+<li>If the solution satisfies cold miss equations, mark them as &quot;intermediate points&quot; otherwise it is a conflict miss.</li>
+</ol>
+
+<p><strong>Set-Associative Cache</strong></p>
+
+<p>Each CME soluction can be summarized using a triple (i,j,n). n denotes the cache &quot;wrap-arounds&quot;, and same value of n indicates the conflict for same memory line.</p>
+
+<p>For k-way associative cache, maintain a set of disctinct conflict points with same n and if the set size exceeds k, we have a conflict.</p>
+
+<h3>Solutions to CMEs</h3>
+
+<h4>Padding</h4>
+
+<p>Find constraints on CMEs using cache base address, dimensions size so that no solution exists for CME. Decide padding based on those constraints.</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/12/cache-basics/">cache basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Performance of CPU increase very fast, however memory is not involving as fast (not the latency nor bandwidth of the bus).</p>
+
+<p>So we put in cache closer to the processor. Caches are small.
+* Caches are faster because they are smaller.
+* Speed of light limits the speed for larger memories.</p>
+
+<h3>Locality</h3>
+
+<p>Programs tend to use data and insturctions with addresses near or equal to those recently used.</p>
+
+<h4>Temporal Locality</h4>
+
+<ul>
+<li>Recently referenced items are likely to be referenced again in the near future.</li>
+<li>Replacement policy of cache.</li>
+</ul>
+
+<h4>Spatial Locality</h4>
+
+<ul>
+<li>Items with nearby addresses tend to be referenced close together in time.</li>
+<li>Bring blocks of memory to the cache</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">sum = 0
+for (i = 0; i &lt; n; i++) {
+  sum += a[i];
+}
+return sum;
+</code></pre></div>
+<p>In the above program:</p>
+
+<p>Date:</p>
+
+<ul>
+<li><strong>Spatial Locality</strong>: array accessed with stride-1 pattern</li>
+<li><strong>Temporal Locality</strong>: sum referenced in each iteration</li>
+</ul>
+
+<p>Instructions:</p>
+
+<ul>
+<li><strong>Temporal</strong>: cycle through loop iteratively.</li>
+<li><strong>Spatial</strong>: reference instructions in sequence.</li>
+</ul>
+
+<h4>Cache structure of core i7</h4>
+
+<p><img src="/images/post-images/core-i7.png"/></p>
+
+<h3>Cache Line or Block Size</h3>
+
+<p>In a direct mapped cache, cache line is the number of bytes that you can store at a given index (can be extended to set associative)</p>
+
+<p><img src="/images/post-images/cache-line.png"/></p>
+
+<h3>Cache conflicts</h3>
+
+<h4>Reads</h4>
+
+<ol>
+<li><strong>Cold(compulsory misses)</strong>: Occurs on first block of data.</li>
+<li><strong>Conflict Miss</strong>: Occurs when cache is large enough but multiple data objects all map to the same slot. e.g. referring block 0, 8, 0, 8.</li>
+<li><strong>Capacity Miss</strong>: Occurs when the set of active cache blocks is larger than the cache.</li>
+</ol>
+
+<h4>Writes</h4>
+
+<ol>
+<li>Data may be stored at multiple levels of memory. (copies are spread across levels)</li>
+<li>On <strong>write-hit</strong> (write block is in cache)
+
+<ul>
+<li><strong>Write-through</strong>: Write immediately to memory</li>
+<li><strong>Write-back</strong> (defer write to memory until the line is evicted): Set a dirty bit to indicate if line is different from memory or not.</li>
+</ul></li>
+<li>On <strong>write-miss</strong>:
+
+<ul>
+<li><strong>write-allocate</strong>: load into cache, update line in cache. Good if more write to location follows.</li>
+<li><strong>no-write-allocate</strong>: just write immediately to memory.</li>
+</ul></li>
+<li>Typical Caches:
+
+<ul>
+<li>write-back + write-allocate</li>
+<li>wite-through + no-write-allocate, occasionally in case of multiple processors.</li>
+</ul></li>
+</ol>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/paper/2014/09/10/threads-and-i-slash-o-in-the-synthesis-kernel/">Threads and Input/Output in the Synthesis Kernel</a></h1>
+	    <p class="entry-meta">
+		    Sep 10, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.51.3887
+Published: 1989</p>
+
+<p>Synthesis operating system kernel combines several techniques to provide high performance, including kernel code synthesis, fine grain scheduling and optimistic synchronization.</p>
+
+<p>Goals:
+1. High performance
+2. self-tuning capability to dynamic load and configuration changes
+3. a simple, uniform and intuitive model of computation with a high-level interface</p>
+
+<p>Two kind of objects supported by synthesis kernel: Threads and I/O</p>
+
+<h3>Synthesis model of computation</h3>
+
+<p>To support parallel and distributed computing, the threads of execution form a directed graph, in which the nodes are threads and the arcs are data flow channels.</p>
+
+<p>Synthesis threads are threads of execution. Some threads never execute user-level code, but run entirely within kernel to provide additional concurrency for some kernel operations. Threads execute program in quaspace (quasi address space) which also stores data. Finally, I/O devices move data between threads including files and messages.</p>
+
+<h4>No virtual memory in current implementation</h4>
+
+<p>On one physical node, all the synthesis quaspaces are subspaces of one single address space. Kernel blanks out parts of address space that each quaspace is not supposed to see. Since they are part of same quaspace, it is easy to share memory by setting their address mappings.</p>
+
+<h2>Kernel Code Synthesis</h2>
+
+<ol>
+<li>Factoring invariants: bypasses redundant computations.</li>
+<li>The Collapsing layer method eliminates unnecessary procedure calls and context switches, both vertically for layered modules and horizontally for pipelined threads.</li>
+<li>The executable data structure method shorten the data structure traversal time when DS is travelled always the same way.</li>
+</ol>
+
+<p>Synthesis kernel can be devided into a number of (collections of procedures and data). These collection of procedures are called - quajects that encapsulate hardware resources (provide interface to hardware through quajects). Important quajects include threads and I/O devices servers.</p>
+
+<p>Threads (quajects, that encapsulate hardware) are abstraction of CPU. The device servers are abstraction of I/O devices. Except from threads, quajects consist only of procedures and data.</p>
+
+<p>quajects don&#39;t support inheritance or any other feature, events such as interrupts start the threads that animate the quajects and do work.</p>
+
+<p>Building blocks of quajects:</p>
+
+<ol>
+<li>monitors, queues and schedulers.</li>
+<li>switches (equivalent to C switch statement, direct interrupts to the appropriate servie routines), pumps (contains thread that actively copies its input into its output.) and guages (counts events like procedure calls, data arrival and interrupts; used by scheduler).</li>
+</ol>
+
+<p>pumps connect passive producers to passive consumers.</p>
+
+<h3>Queues</h3>
+
+<p>Queue Type =&gt; Synchronous (blocks at empty or full) and Asynchronous(signals at those conditions) =&gt; dedicated (only 1 producer or consumer, omits synchronization) and optimistic queues (accepts queue insert and delete from multiple prod;cons;)</p>
+
+<h3>Threads are created by <strong>Quaject Creator</strong> in 3 stages</h3>
+
+<ol>
+<li><strong>Allocation</strong> - allocate memory - for quaject and procedures.</li>
+<li><strong>Factorization</strong> - uses factorizing invariants to substitute constants into quaject&#39;s code templates.</li>
+<li><strong>Optimization</strong> - do peephole optimizations.</li>
+</ol>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># mnemonic
+ -----\|\ -&gt; [  - - \ - | \]  -&gt; [ - - - c \ - c | ] -&gt; [ - - - - c - - c ]
+</code></pre></div>
+<h3>Quaject Interfacer</h3>
+
+<p>Starts the execution of existing quajects by installing (load procedures and data) them in invoking thread. 4 Stages:</p>
+
+<ol>
+<li>find connecting mechanism (queue, monitor, pump or a simple procedure call) from 1 quaject to another.</li>
+<li>Factorization and Optimization (Run time).</li>
+<li>Dynamic link stage stores synthesized code&#39;s entry points to the quajects.</li>
+</ol>
+
+<h3>Reducing Synchronization</h3>
+
+<p>Three methods to reduce Synchronization:</p>
+
+<ol>
+<li>Code Isolation (synchronization avoidance) -&gt; kernel synthesis to separate independent modification of DS. e.g., Thread Table Entry (lock global table -&gt; change local tables)</li>
+<li>Procedure Chaining ( &quot;&quot; ) -&gt; serializes the execution of conflicting threads. Signal during interrupt handling could be dangerous, so chain the prodedure invoked by signal to the end of interrupt handler (replace the return address - effecient.)</li>
+<li>Optimistic Synchronization - update without synchronization, test at the end - if something bad happened -&gt; rollback and retry.</li>
+</ol>
+
+<h3>Optimistic Queues</h3>
+
+<p>Queues are important since lot of functionality is implemented using queues. Four types - SP-SC, SP-MC, MP-SC, MP-MC</p>
+
+<ul>
+<li><p><strong>SP-SC</strong> - synchronization is only necessary when queue becomes empty or full. Usually busy wait.
+Solution: update the pointer (Q-head for producer, Q-tail for consumer) at the very end. In later architectures, you may have to put memory fence to ensure store order.</p></li>
+<li><p><strong>MP-SC</strong> - compare-and-swap instruction + retry loop.
+Now producers claim the space first by incrementing the Qhead and if successful they start inserting the elements. Consumers can&#39;t trust the head now, so producers update flags corresponding to queue positions indicating if the element is valid.</p></li>
+</ul>
+
+<p>Compare and swap is atomic, so they update a local pointer and see if it&#39;s valid. If it&#39;s valid then they swap it with head. -&gt; all other producers will see the updated head now while the current producer is inserting elements on claimed space.</p>
+
+<h3>Threads</h3>
+
+<p>The thread state is defined by TTE containing register save area, interrupt handlers, error traps and signal vectors; the address map tables, <strong>context-switch-in and out procedures</strong>.</p>
+
+<p>Kernel generates some code for threads in a protected area - custom system calls, synthesized interrupt handlers such as for queue buffering, specialized eror trap handlers and thread calls (start, stop, etc.)</p>
+
+<ul>
+<li>Thread switches to supervisor mode while running kernel call instead of kernel server running it for the thread. Kernel quaspace is made accessible.</li>
+</ul>
+
+<p>Waiting queue is spread accross resources and waiting thread&#39;s unblocking procedure is chained to the end of interrupts handler.</p>
+
+<h3>Context Switch</h3>
+
+<ol>
+<li><p>Switch only the part of context being used. (most of the processes don&#39;t use FP co-processor so don&#39;t save state [default synthesized code] until used[then resynthsize code]).</p></li>
+<li><p>use executable data structures to minimize critical path. - No &quot;dispatcher&quot; - context-switch-out of 1 process contains jmp to context-switch-in for next process.</p></li>
+</ol>
+
+<h3>Signal</h3>
+
+<p>Signal is an asynchronous software interrupt sent by a thread to another. Signal system call modifies a general area so that receiving thread can run the signal handler code in used mode.</p>
+
+<h3>Scheduling</h3>
+
+<p>Fine grained quanta to threads - based on &quot;need to execute&quot; determined by rate at with I/O data flows into and out of its quaspace.</p>
+
+<p>Effective CPU = Quanta to thread / Quanta to all threads</p>
+
+<p>priority -&gt; assigning large quanta or placing in front of ready queue.</p>
+
+<h3>I/O</h3>
+
+<p>At boot time, kernel creates the servers for raw physical devices. A simple example pipelines the raw input from tty to filters. multiple filters may be applied during the process.</p>
+
+<h3>Producer/Consumer in I/O</h3>
+
+<p>Active producer - Passive Consumer (or vice versa). In case of SP-SC, a procedure call from consumer asking producer for data does the job.</p>
+
+<p>For MP-SC or SP-MC, attach monitor at the multiple end resulting in MP-SC or SP-MC queues.</p>
+
+<p>Passive producer - Passive Consumer -&gt; xclock -&gt; clock producer ready to produce time and clock displayer ready to display at all times. We use PUMP here that reads from one end and writes to another.</p>
+
+<h3>Interrupt Handlers</h3>
+
+<p>Each threads has its own synthesized interrupt handellers and system calls. Lot of interrupts can be handelled in current execution thread only so minimal saving of registers is required and it avoid a context switch. During short level interrupt, higher level interrupts may happend and those inerrupts are chained.</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/09/file-system-continued/">file system continued</a></h1>
+	    <p class="entry-meta">
+		    Sep 9, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><img src="http://i.imgur.com/ZXnlN2R.jpg?1" width="500"></p>
+
+<p><strong>fsync</strong>: transfers (flushes) all modified in-code data of the file to the disk drive. The call blocks until the device reports that the transfer has completed.</p>
+
+<p><strong>fdatasync</strong>: is similar to fsync but it doesn&#39;t flush modified metadata unless that metadata is needed in order to allow a subsequent data retrieval to be correctly handled</p>
+
+<p>source: http://www.hackinglinuxexposed.com/articles/20030616.html
+```
+flock(fd, operation)
+    Locks or unlocks an entire file. Doesn&#39;t work on NFS mounted filesystems, unfortunately.
+    Available operations are</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">LOCK_SH Create a shared lock
+LOCK_EX Create an exclusive lock
+LOCK_UN Release our lock
+LOCK_NB Don&#39;t block when setting the lock. Return an error if the action cannot be completed.
+</code></pre></div>
+<p>lockf(fd, operation, offset)
+    Locks or unlocks the portion of the file after offset. Allows you to lock just trailing portions of the file,
+    if desired. lockf is just a front end for fcntl. Arguments:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">F_LOCK  Create an exclusive lock
+F_TLOCK Create an exclusive lock or return an error immediately
+F_ULOCK Release our lock
+F_TEST  Test if the file is locked by another process.[3]
+</code></pre></div>
+<p>fcntl(fd, command, struct flock );
+    fcntl offers you the most locking control. The flock structure details the beginning and end of the segment to lock.
+    It has arguments analogous to those for lockf and can differentiate between read and write locks.
+    (fcntl can do other things too, such as setting the close on exec flag, duplicating a file descriptor, and more.)
+```</p>
+
+<h2>Virtual File System</h2>
+
+<h3>file lookup</h3>
+
+<p><img src="http://i.imgur.com/xzBvOct.png?1" width="500"><br/>
+source: Profession Linux Kernel Architecture, chapter 8</p>
+
+<p>Symbolic links are directory enteries which doesn&#39;t contain any data but just a pointer to filename. A separate inode is used for each symbolic link. The data segment of inode contains a character string that gives the name of the link target.</p>
+
+<p>File descriptors with introduction of multiple namespaces and linux containers can no more uniquely identify a file. A unique representation is provided by a special data structure (struct file).</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/formal/verification/2014/09/09/verification-by-model-checking/">verification by model checking</a></h1>
+	    <p class="entry-meta">
+		    Sep 9, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Formal verification techniques can be thought of comprising of three parts:</p>
+
+<ol>
+<li>a <strong>framework for modelling systems</strong>, typically a description language.</li>
+<li>a <strong>specific language</strong> for describing the properties of the world.</li>
+<li>a <strong>verification method</strong> to establish whether the description of the system satisfies the specification.</li>
+</ol>
+
+<p>Approaches to method verification:</p>
+
+<ol>
+<li>Proof Based: Here the system description is a set of formulas <em>Γ</em> and specific language is another formula φ. The verification method consists of trying to find a proof that <em>Γ</em> |− φ.</li>
+<li>Model Based: the system is represented by model M, specification is again by a formula φ and the verification method consists of computing whether a model M satisfies φ.</li>
+</ol>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/paper/2014/09/07/exokernel-notes/">Exokernel: an OS architecture for application-level resource management - Notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 7, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>source</strong>: http://research.cs.wisc.edu/areas/os/Qual/papers/exokernel.pdf<br/>
+<strong>published</strong>: SIGOPS 1995</p>
+
+<p>Traditionally operating systems define an interface between physical resources and applications. OS provides several abstractions like processes, files, address spaces and interprocess communication.</p>
+
+<p><strong>These hardcoded abstractions limits</strong>:</p>
+
+<ul>
+<li>Domain specific optimizations</li>
+<li>Discourages chages to the implementatinos of current abstractions</li>
+<li>makes it difficult or impossible the applications to define new abstractions</li>
+</ul>
+
+<p>In exokernel these problems are solved by using <strong>application level (i.e., untrused) resource management</strong>. In exokernels, virtual memory and interprocess communication are implemented at application level. A minimal OS - <em>exokernel</em> basically multiplexes available hardware resource. These application level implementations are provided as libraries which application developers can directly or implement their own. Exokernel tries to implement a very low level interface, thus leaving a lattitude for more domain specific optimizations at the higher (application) level.</p>
+
+<p>Exokernel rather than emulating hardware (virtual machines, high overhead), <em>exports</em> hardware resources. It employs three techniques to export resources securly:</p>
+
+<ol>
+<li><strong>secure bindings</strong>: applications can securely bind to machine resources and handle events.</li>
+<li><strong>visible revocation</strong>: applications participate in a resource revocation protocol</li>
+<li><strong>abort protocol</strong>: an exokernel can break secure bindings of uncooperative applications by force.</li>
+</ol>
+
+<p><strong>use cases of exokernels</strong>:</p>
+
+<ol>
+<li>Page tables are application dependent and using domain specific implementation each application may implement their own page tables in exokernel. For example in database implementation.</li>
+<li>The same is true for cache replacement policy, a paper shows that application runtime can be improved by 45% by implementing application specific caching policies.</li>
+<li>End-to-end arguments applies to exokernels and new tecchnology can be more easily adapted by providing library operating systems (application level resource management libraries).</li>
+</ol>
+
+<p><img src="http://i.imgur.com/wv54Rtd.png"></p>
+
+<h3>Library Operating Systems</h3>
+
+<ol>
+<li>Library operating systems need not multiplex a resource so they can be easuly specialized without consideration of resource management. </li>
+<li>Since lib OSs are treated as untrusted applications by exokernel , lib OS can trust the applications (which makes them easy to design). In case of invalid params to lib OS, exokernel will check the input (since untrusted) and declare it as invalid. No other applications will be effected. </li>
+<li>Finally there will be less kernel crossings since most the OS runs in address space of applications.</li>
+</ol>
+
+<h3>Exokernel Design</h3>
+
+<blockquote>
+<p>The challenge of exokernel is to provide maximum freedom to applications in managing physical resource while protecting them form each other. Exokernel separates protection from management through low level interface</p>
+</blockquote>
+
+<h3>Exokernel Notes</h3>
+
+<p>Deadlock conditions:
+* mutual exclusion
+* non-preemptive
+* ---
+* ---</p>
+
+<p>Thrashing vs Livelock</p>
+
+<p>End-to-end argument: putting reliability in your system, when you have end-to-end reliability checking can only be viewed as optimization.</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/basics/2014/09/04/basic-os-concepts/">basic os concepts</a></h1>
+	    <p class="entry-meta">
+		    Sep 4, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h3>Memory Allocation/Memory Management</h3>
+
+<blockquote>
+<p>Act of managing computer memory. Essential requirement is to provide ways to dynamically allocate memory to programs at their request and free when not needed.</p>
+</blockquote>
+
+<ol>
+<li><strong>Memory Pools/Fixed-size block allocation</strong>: uses a free list of often same size block of memory and allocates on request. This works well for embedded systems.</li>
+<li><strong>buddy blocks</strong>: In this system memory is allocated from several blocks instead of just one. Memory pools often represent blocks of size of power 2. When a certain size of memory is requested, the pool with minimum size meeting the requirements is used to allocate memory. If no such block is present, a block from higher pool is broken into smaller blocks and then memory is allocated.</li>
+</ol>
+
+<h3>Fragmentation</h3>
+
+<blockquote>
+<p>Three types: External, Internal and Data fragmentation</p>
+</blockquote>
+
+<p>Since the memory is often assigned in blocks of power 2, there would be a waste of memory either internally or externally. Overtime while memory is getting allocated and released, there will holes in between. If there are holes outside the allocated area, it&#39;s called external fragmentation and if there are holes inside the allocated area it&#39;s called internal fragmentation.
+Data fragmentation occurs when a collection of data in memory is broken into pieces that are not closed together. For example, a file that is not able to fit in contiguous memory.</p>
+
+<h3>Translation look-aside buffer (TLB)</h3>
+
+<p>A cache that <strong>Memory Management Unit</strong> uses to improve virtual address translation speed.</p>
+
+<p>Virtual memory is the space seen from a process. The page table keeps track of where the virtual pages are stored in the physical memory. The TLB is implemented as CAM (content addressable memory). CAM key is virtual address and search result is the physical address. If there&#39;s a miss in TLB, translation proceeds by <strong>page walk</strong>.</p>
+
+<h3>Interrupt</h3>
+
+<p>Interrupt is a signal to the processor emitted by software or hardware indicating an event that needs immediate attention. The processor responds by suspending its current activities, saving its state and executing a function called interrupt handler (or interrupt service routine, ISR).</p>
+
+<p><strong>Hardware Interrupts</strong> are used by devices to communicate that they require special attention. Internally they are generated by sending alerting signals to the processors. Basically give each device a wire (interrupt line) that it can use to signal processor. Hardware interrupts are <strong>asynchronous</strong>.</p>
+
+<p><strong>Software Interrupts</strong> is cause either by an exceptional condition in the processor itself or a special instruction in the instruction set which causes an interrupt when executed. The former is often called a <strong>trap</strong> (<strong>Divide by 0 causes trap</strong>)
+Special instruction is used to interrupt to request services from low level system software such as device drivers. Software interrupts are often used to implement system calls.</p>
+
+<p><img src="http://i.imgur.com/cBhat6K.png"></p>
+
+<p>Several ways to implement interrupts. Could be implemented using a active wire (level triggered, high or low), edge triggered, message signaled, Doorbell <a href="http://en.wikipedia.org/wiki/Interrupt">wiki link</a>.</p>
+
+<h3>Distributed Shared Memory</h3>
+
+<p>Physically separate memories can be addressed globally. Two processors with same address will point to same memory address. Can be implemented at OS level or library level.</p>
+
+<h4>Stateful and stateless servers</h4>
+
+<p>A stateful server remembers client data from previous request whereas stateless server doesn&#39;t.</p>
+
+<p>State may refer to any information related to client like whether the file is open, or being modified or cached data on client etc.</p>
+
+<p>NFS is a stateless system.
+- Each request must be complete since no state is stored - the file has to fully identified and any offsets specified.
+- if a server crashes and then recovers, no info was lost since it&#39;s stateless. higher degree of fault tolerence.
+- no server overhead for storing client information, and server doesn&#39;t get affected if client crashes.</p>
+
+<p>AFS is stateful System
+- Requests are shorter
+- cache coherence is possible; server can know which clients are caching which blocks of a file.
+- File locking is possible; server can maintain that certain client is locking a file.
+- server returns an identifier to client creating a session and keeps track of open files. It is required to maintain state if providing unix file semantics.</p>
+
+<h4>Difference between stateful and stateless file systems</h4>
+
+<ul>
+<li>Failure Recovery:
+
+<ul>
+<li>A stateful server loses all its valatile state in a crash. Server needs to be aware of client failure to reclaim memory.</li>
+</ul></li>
+<li>Slow processing and longer request messages in case of stateless systems. Difficult to provide unix file semantics.</li>
+<li>A server employing server-iniitiated cache needs to have state to validate cache.</li>
+<li>UNIX use of file descriptors and implicit offsets is inherently stateful. servers must maintain tables to map file descriptors to inodes and store current offset within file.</li>
+</ul>
+
+<p><a href="http://www.cs.gmu.edu/%7Esetia/cs571-F02/slides/lec9.pdf">Detailed Info</a></p>
+
+<h3>Swapping</h3>
+
+<p>When all the process in a multiprogrammed CPU are not able reside in memory at the same time, some of the process that are not scheduled currently or are blocked are transferred to secondary memory. This dynamic moving of process between memotu and disk is called swapping.</p>
+
+<h3>Inverted Page Table</h3>
+
+<p><img src="http://i.imgur.com/ItoPoXI.jpg?1" width="500"></p>
+
+<p>Linear Inverted Tables: Rather than mapping virtual addresses to physical addresses, we map physical address to virtual addresses.
+http://www.cs.berkeley.edu/~kamil/teaching/sp04/040104.pdf</p>
+
+<h3>File Systems</h3>
+
+<blockquote>
+<p>Give at least three strategies that a file system can employ to reduce the time a program spends waiting for data reads to complete.</p>
+</blockquote>
+
+<ul>
+<li>Prefetching (Spatial Locality) - A process doing random access will not get the benifits.</li>
+<li>Indexing (Index Most Used Paths) - Accessing files that are not used commonly will be effected.</li>
+<li>Caching - If the data is being changed rapidly, cache will become stale soon and benifits will diminish.</li>
+</ul>
+
+<p>http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/</p>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/04/kernel-compilation-notes/">kernel compilation notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 4, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>Kernel Versions</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># Guest
+goyal@fyra:~$ uname -a
+Linux fyra 3.13.0-34-generic #60-Ubuntu SMP Wed Aug 13 15:45:27 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+
+# Host
+ankit@ubuntu2:~$ uname -a
+Linux ubuntu2 3.16.1 #1 SMP Thu Sep 4 18:57:37 CDT 2014 x86_64 GNU/Linux
+</code></pre></div>
+<h2>Create VM</h2>
+
+<ul>
+<li>Install KVM and it&#39;s dependencies.</li>
+<li>Create a Ubuntu VM using VMBuilder</li>
+</ul>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">sudo vmbuilder kvm ubuntu     <span class="se">\</span>
+    --arch i386               <span class="se">\</span>
+    --user ankit              <span class="se">\</span>
+    --name ankit              <span class="se">\</span>
+    --pass cracker            <span class="se">\</span>
+    --suite lucid             <span class="se">\</span>
+    --flavour virtual         <span class="se">\</span>
+    --addpkg openssh-server   <span class="se">\</span>
+    --libvirt qemu:///system
+</code></pre></div>
+	  		
+	  		<p><a href="/2014/09/04/kernel-compilation-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/unix/filesystem/2014/09/04/slash-udev-notes/">/udev notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 4, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h3>Problems with <code>/dev</code></h3>
+
+<ol>
+<li>A static /dev is unwiedly big. It would be nice to show only /dev enteries for the devices that we acutally have running in the system.</li>
+<li>We are running out of major and minor number for devices.</li>
+</ol>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">  <span class="o">[</span>vagrant@vagrant-centos64 ~<span class="o">]</span><span class="nv">$ </span>ls -l /dev/sda
+  brw-rw---- <span class="m">1</span> root disk 8, <span class="m">0</span> Aug <span class="m">14</span> 05:36 /dev/sda
+
+  <span class="c"># shows permissions (brw-rw---- ), owner (root), group (disk), major device number (8),</span>
+    minor device number <span class="o">(</span>0<span class="o">)</span>, date <span class="o">(</span>Aug 14<span class="o">)</span>, hour <span class="o">(</span>05:36<span class="o">)</span> and device name
+</code></pre></div>
+<p>When accessing a device file, the major device number selects which device driver is being called to perform read/write. Minor number is passed as a parameter and its usage/interpretations depends on the driver.<br/></p>
+
+<ol>
+<li>Users want a way to name devices in persistant fashion.</li>
+<li>Userspace programs wants to know what devices are created or removed and what /dev entry is associated with them.</li>
+</ol>
+
+	  		
+	  		<p><a href="/unix/filesystem/2014/09/04/slash-udev-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/unix/filesystem/2014/09/02/the-unix-time-sharing-system-notes/">The Unix Time-Sharing System Notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 2, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>source</strong>: http://cm.bell-labs.com/cm/cs/who/dmr/cacm.html<br/>
+<strong>published</strong>: ACM 1974</p>
+
+<h2>The File System</h2>
+
+<p>From the user&#39;s point of view, three kinds of files:</p>
+
+<ol>
+<li><strong>ordinary disk files</strong> - no particular structure expected by system. Structure of files is controlled by programs (object files generated by assembler). Could be binary files or simple text files.</li>
+<li><strong>directories</strong> - mapping between the names of files and the files themselves.
+
+<ul>
+<li>System maintains several directories for its own use.
+
+<ul>
+<li><strong>root directory</strong>: the starting point for other files in the system.</li>
+<li>directory that contains commands to be executed. (not required, for convinience since commands can be placed anywhere).</li>
+<li>null filename refers to current directory. </li>
+</ul></li>
+</ul></li>
+</ol>
+
+	  		
+	  		<p><a href="/unix/filesystem/2014/09/02/the-unix-time-sharing-system-notes/">Read more »</a></p>
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/08/31/unique-abbreviation-for-a-list-of-words/">Unique Abbreviation for a list of words</a></h1>
+	    <p class="entry-meta">
+		    Aug 31, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Find unique abbreviation for a given list of words.</p>
+
+<div class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;string&gt;</span>
+<span class="cp">#include &lt;unordered_map&gt;</span>
+<span class="cp">#include &lt;vector&gt;</span>
+<span class="cp">#include &lt;queue&gt;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="cm">/*</span>
+<span class="cm"> * Method: abbreviateWord(string word, int offset)</span>
+<span class="cm"> *</span>
+<span class="cm"> * Example: internationalization, 1: i18n</span>
+<span class="cm"> *          auto, 1: a2o</span>
+<span class="cm"> *          automatic, 2: au5ic</span>
+<span class="cm"> * */</span>
+
+<span class="n">string</span> <span class="nf">abbreviateWord</span><span class="p">(</span><span class="n">string</span> <span class="n">word</span><span class="p">,</span> <span class="kt">int</span> <span class="n">offset</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">word</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="kt">int</span> <span class="n">numeric_part</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">offset</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">string</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">word</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">offset</span><span class="p">);</span>
+  <span class="n">string</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">word</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="o">-</span><span class="n">offset</span><span class="p">);</span>
+  <span class="n">numeric_part</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">offset</span><span class="p">);</span>
+  <span class="n">string</span> <span class="n">result</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">numeric_part</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">;</span>
+  <span class="k">else</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">to_string</span><span class="p">(</span><span class="n">numeric_part</span><span class="p">)</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/** Returns unique mapping of abbreviations to words for a given list of words.</span>
+<span class="cm"> * Input:</span>
+<span class="cm"> * words: vector of words of string datatype.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Return:</span>
+<span class="cm"> * map with keys as abbreviations and values as the corressponding words.</span>
+<span class="cm"> *</span>
+<span class="cm"> * Example:</span>
+<span class="cm"> * Input: [&quot;abcdef&quot;, &quot;abpqef&quot;, &quot;internationalization&quot;, &quot;something&quot;]</span>
+<span class="cm"> * Output:</span>
+<span class="cm"> *</span>
+<span class="cm"> * acdef -&gt;  ac1ef</span>
+<span class="cm"> * doordonotthereisnotry -&gt;  d19y</span>
+<span class="cm"> * cool -&gt;  c2l</span>
+<span class="cm"> * aqref -&gt;  aq1ef</span>
+<span class="cm"> * internationalization -&gt;  i18n</span>
+<span class="cm"> *</span>
+<span class="cm"> * */</span>
+<span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">string</span><span class="o">&gt;&amp;</span> <span class="n">uniqueAbbreviation</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;&amp;</span> <span class="n">words</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// maintain a hash map with abbv -&gt; word mapping.</span>
+  <span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">string</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">abbvWord</span> <span class="o">=</span> <span class="k">new</span> <span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+  <span class="c1">// maintain a queue for processing words.</span>
+  <span class="n">queue</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">wordQueue</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// initial offset</span>
+  <span class="c1">// loop until all done</span>
+  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">it</span> <span class="p">:</span> <span class="n">words</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">wordQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">it</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">string</span> <span class="n">word</span><span class="p">,</span> <span class="n">abbv</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">wordQueue</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+  <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">wordQueue</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">word</span> <span class="o">=</span> <span class="n">wordQueue</span><span class="p">.</span><span class="n">front</span><span class="p">();</span>
+    <span class="n">wordQueue</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+
+    <span class="n">abbv</span> <span class="o">=</span> <span class="n">abbreviateWord</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">offset</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="o">*</span><span class="n">abbvWord</span><span class="p">)[</span><span class="n">abbv</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span><span class="o">*</span><span class="n">abbvWord</span><span class="p">)[</span><span class="n">abbv</span><span class="p">]</span> <span class="o">=</span> <span class="n">word</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">wordQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(((</span><span class="o">*</span><span class="n">abbvWord</span><span class="p">)[</span><span class="n">abbv</span><span class="p">]));</span>
+      <span class="n">abbvWord</span><span class="o">-&gt;</span><span class="n">erase</span><span class="p">(</span><span class="n">abbv</span><span class="p">);</span>
+      <span class="n">wordQueue</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">word</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">count</span><span class="o">--</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">count</span> <span class="o">=</span> <span class="n">wordQueue</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+      <span class="n">offset</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="o">*</span><span class="n">abbvWord</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Internationaalization, 1: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">abbreviateWord</span><span class="p">(</span><span class="s">&quot;internationalization&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Internationalization, 2: &quot;</span> <span class="o">&lt;&lt;</span>  <span class="n">abbreviateWord</span><span class="p">(</span><span class="s">&quot;internationalization&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;abcdef, 3: &quot;</span> <span class="o">&lt;&lt;</span>  <span class="n">abbreviateWord</span><span class="p">(</span><span class="s">&quot;abcdef&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+  <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">words</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;internationalization&quot;</span><span class="p">,</span> <span class="s">&quot;cool&quot;</span><span class="p">};</span>
+  <span class="n">words</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;doordonotthereisnotry&quot;</span><span class="p">);</span>
+  <span class="n">words</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;acdef&quot;</span><span class="p">);</span>
+  <span class="n">words</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="s">&quot;aqref&quot;</span><span class="p">);</span>
+
+  <span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">abbvWords</span> <span class="o">=</span> <span class="n">uniqueAbbreviation</span><span class="p">(</span><span class="n">words</span><span class="p">);</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">it</span> <span class="p">:</span> <span class="n">abbvWords</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">it</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; -&gt;  &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">it</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/cpp/pointers/2014/08/31/swap-using-reference/">Swap Using Reference</a></h1>
+	    <p class="entry-meta">
+		    Aug 31, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Write a method to swap two integers passed by reference.</p>
+
+<div class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include &lt;iostream&gt;</span>
+<span class="c1">// swap using pointers</span>
+<span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">temp</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+  <span class="n">a</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">b</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;a = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;, b = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;a = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;, b = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+		
+		<div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/java/hello/2014/08/31/hola-mundo/">hola mundo</a></h1>
+	    <p class="entry-meta">
+		    Aug 31, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>the hola mundo program.</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">HolaMundo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Hello World!&quot;</span><span class="o">);</span> <span class="c1">// Display the string.</span>
+    <span class="o">}</span>
+  <span class="o">}</span></code></pre></div>
+
+	  		
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+    
+
+  <p class="rss-subscribe">Subscribe <a href="/jekyll-lambda/feed.xml">via RSS</a> or browse <a href="https://github.com/" target="_blank">source on GitHub</a>.</p>
+
+</div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>file system continued</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/09/09/file-system-continued/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/09/file-system-continued/">file system continued</a></h1>
+	    <p class="entry-meta">
+		    Sep 9, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><img src="http://i.imgur.com/ZXnlN2R.jpg?1" width="500"></p>
+
+<p><strong>fsync</strong>: transfers (flushes) all modified in-code data of the file to the disk drive. The call blocks until the device reports that the transfer has completed.</p>
+
+<p><strong>fdatasync</strong>: is similar to fsync but it doesn&#39;t flush modified metadata unless that metadata is needed in order to allow a subsequent data retrieval to be correctly handled</p>
+
+<p>source: http://www.hackinglinuxexposed.com/articles/20030616.html
+```
+flock(fd, operation)
+    Locks or unlocks an entire file. Doesn&#39;t work on NFS mounted filesystems, unfortunately.
+    Available operations are</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">LOCK_SH Create a shared lock
+LOCK_EX Create an exclusive lock
+LOCK_UN Release our lock
+LOCK_NB Don&#39;t block when setting the lock. Return an error if the action cannot be completed.
+</code></pre></div>
+<p>lockf(fd, operation, offset)
+    Locks or unlocks the portion of the file after offset. Allows you to lock just trailing portions of the file,
+    if desired. lockf is just a front end for fcntl. Arguments:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">F_LOCK  Create an exclusive lock
+F_TLOCK Create an exclusive lock or return an error immediately
+F_ULOCK Release our lock
+F_TEST  Test if the file is locked by another process.[3]
+</code></pre></div>
+<p>fcntl(fd, command, struct flock );
+    fcntl offers you the most locking control. The flock structure details the beginning and end of the segment to lock.
+    It has arguments analogous to those for lockf and can differentiate between read and write locks.
+    (fcntl can do other things too, such as setting the close on exec flag, duplicating a file descriptor, and more.)
+```</p>
+
+<h2>Virtual File System</h2>
+
+<h3>file lookup</h3>
+
+<p><img src="http://i.imgur.com/xzBvOct.png?1" width="500"><br/>
+source: Profession Linux Kernel Architecture, chapter 8</p>
+
+<p>Symbolic links are directory enteries which doesn&#39;t contain any data but just a pointer to filename. A separate inode is used for each symbolic link. The data segment of inode contains a character string that gives the name of the link target.</p>
+
+<p>File descriptors with introduction of multiple namespaces and linux containers can no more uniquely identify a file. A unique representation is provided by a special data structure (struct file).</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

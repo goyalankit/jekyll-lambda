@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Fast Paxos</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="
+Algorithm executes multiple rounds.
+An acceptor votes to accept atmost one value in a single round.
+Goal: Achieve consistency by ensuring that different values are not chosen in different rounds.
+Note that rounds can run concurrently, may be skipped altogether.
+
+
+Accepter
+
+State maintained by accepter:
+# state maintained by acceptor
+rnd[a]
+vrand[a]
+vval[a]
+
+
+rnd[a] - highest numbered round in which a participated, initially 0.
+vrand[a] - highest numbered round in which a has cast a vote, initially 0.
+vval[a]- The value a voted to accept in round vrand[a]; it&#39;s initial value is irrelevant. can be inferred using vrand[a] == 0
+
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/11/11/fast-paxos/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/11/11/fast-paxos/">Fast Paxos</a></h1>
+	    <p class="entry-meta">
+		    Nov 11, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>Algorithm executes multiple rounds.</li>
+<li>An acceptor votes to accept atmost one value in a single round.</li>
+<li>Goal: Achieve consistency by ensuring that different values are not chosen in different rounds.</li>
+<li>Note that rounds can run concurrently, may be skipped altogether.</li>
+</ul>
+
+<h2>Accepter</h2>
+
+<p>State maintained by accepter:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># state maintained by acceptor
+rnd[a]
+vrand[a]
+vval[a]
+</code></pre></div>
+<ul>
+<li><code>rnd[a]</code> - highest numbered round in which a participated, initially 0.</li>
+<li><code>vrand[a]</code> - highest numbered round in which a has cast a vote, initially 0.</li>
+<li><code>vval[a]</code>- The value a voted to accept in round <code>vrand[a]</code>; it&#39;s initial value is irrelevant. can be inferred using <code>vrand[a] == 0</code></li>
+</ul>
+
+<!-- more -->
+
+<p>Constraint: <code>vrand[a] &lt;= rnd[a]</code> is always true. Since it cannot vote without participating in it. But it can participate and doesn&#39;t vote.</p>
+
+<p>Questions?
+- what is this value that we are talking about?</p>
+
+<h2>Coordinator (role is often played by acceptors)</h2>
+
+<ul>
+<li>For each round <em>i</em>, some coordiantor is pre-assigned to be the coordinator of round <em>i</em>.</li>
+<li>Moreover, each coordinator is assigned to be the coordinator for infinitely many rounds.</li>
+<li><strong>Proposers</strong> send their proposals to coordinators.</li>
+<li>The coordinator picks a value in round <em>i</em>, that it tries to get chosen in that round.</li>
+</ul>
+
+<p>State maintined by coordinator:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">crnd[c]
+cval[c]
+</code></pre></div>
+<ul>
+<li><code>crnd[c]</code> The highest-numbered round c has begun.</li>
+<li><code>cval[c]</code> The value that c has picked for that round or the special value none if c has not yet picked a value for that round.</li>
+</ul>
+
+<p>Questions?
+- How do we decide coordinator for a given round <em>i</em>?</p>
+
+<h2>The Basic Algorithm</h2>
+
+<h3>Phase 1a:</h3>
+
+<ul>
+<li>Coordinator sends a message ( <code>crnd</code>, <code>cval</code> ) to each acceptor to <code>participate</code> in round i.</li>
+</ul>
+
+<h3>Phase 1b:</h3>
+
+<ul>
+<li>Acceptor replies or ignores the message based on following conditions.</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Success:
+i &gt; rnd[a]
+
+Fail:
+i &lt;= rnd[a] (i.e., a has already begun round i or higher)
+</code></pre></div>
+<p>If success, it sends a message to coordinator containing (<code>vrand[a]</code>, <code>vval[a]</code>)</p>
+
+<h3>Phase 2a:</h3>
+
+<ul>
+<li>Coordinator, on getting majority messages, sends acceptors a message to vote on <strong>value</strong>(cval, chosen by looking at the contents of Phase 1b message) in round <code>i</code>.</li>
+</ul>
+
+<h3>Phase 2b:</h3>
+
+<ul>
+<li>Acceptor accepts the message to vote on v in round i based on following conditions.</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Success:
+i &gt;= rnd[a] and vrnd[a] != i
+
+Fail:
+i &lt; rnd[a] (accepted has started higher round)
+vrand[a] == i (alreaded voted in this round and only one value can be accepted in this round)
+</code></pre></div>
+<p>Note: acceptor ignores the message no fail. On Accept, it sends a message to all <strong>learners</strong> announcing its round i vote.</p>
+
+<h3>Learner</h3>
+
+<ul>
+<li>A learner accepts a value only if it receives message (Phase 2b) from majority of acceptors.</li>
+</ul>
+
+<h2>Important Constraint</h2>
+
+<ul>
+<li>Coordinators are assigned unique rounds, which ensures that phase 2a messages cannot be sent for with different values in same round.</li>
+</ul>
+
+<p><img src="http://i.imgur.com/f6kKDsL.jpg?1" alt="Paxos Basic"></p>
+
+<h3>Picking a value in phase 2a</h3>
+
+<blockquote>
+<p>CP: For any round i and j with j &lt; i, if a value v has been chosen or might yet be chosen in round j, then no acceptor can vote for any value except v in round i.</p>
+</blockquote>
+
+<hr>
+
+<ul>
+<li>paper doesn&#39;t discuss leader election (coordinator)</li>
+</ul>
+
+<h2>Making Progress</h2>
+
+<ul>
+<li>When acceptor receives</li>
+</ul>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

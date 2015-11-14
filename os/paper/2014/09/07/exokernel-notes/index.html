@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Exokernel: an OS architecture for application-level resource management - Notes</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/paper/2014/09/07/exokernel-notes/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/paper/2014/09/07/exokernel-notes/">Exokernel: an OS architecture for application-level resource management - Notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 7, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>source</strong>: http://research.cs.wisc.edu/areas/os/Qual/papers/exokernel.pdf<br/>
+<strong>published</strong>: SIGOPS 1995</p>
+
+<p>Traditionally operating systems define an interface between physical resources and applications. OS provides several abstractions like processes, files, address spaces and interprocess communication.</p>
+
+<p><strong>These hardcoded abstractions limits</strong>:</p>
+
+<ul>
+<li>Domain specific optimizations</li>
+<li>Discourages chages to the implementatinos of current abstractions</li>
+<li>makes it difficult or impossible the applications to define new abstractions</li>
+</ul>
+
+<p>In exokernel these problems are solved by using <strong>application level (i.e., untrused) resource management</strong>. In exokernels, virtual memory and interprocess communication are implemented at application level. A minimal OS - <em>exokernel</em> basically multiplexes available hardware resource. These application level implementations are provided as libraries which application developers can directly or implement their own. Exokernel tries to implement a very low level interface, thus leaving a lattitude for more domain specific optimizations at the higher (application) level.</p>
+
+<p>Exokernel rather than emulating hardware (virtual machines, high overhead), <em>exports</em> hardware resources. It employs three techniques to export resources securly:</p>
+
+<ol>
+<li><strong>secure bindings</strong>: applications can securely bind to machine resources and handle events.</li>
+<li><strong>visible revocation</strong>: applications participate in a resource revocation protocol</li>
+<li><strong>abort protocol</strong>: an exokernel can break secure bindings of uncooperative applications by force.</li>
+</ol>
+
+<p><strong>use cases of exokernels</strong>:</p>
+
+<ol>
+<li>Page tables are application dependent and using domain specific implementation each application may implement their own page tables in exokernel. For example in database implementation.</li>
+<li>The same is true for cache replacement policy, a paper shows that application runtime can be improved by 45% by implementing application specific caching policies.</li>
+<li>End-to-end arguments applies to exokernels and new tecchnology can be more easily adapted by providing library operating systems (application level resource management libraries).</li>
+</ol>
+
+<p><img src="http://i.imgur.com/wv54Rtd.png"></p>
+
+<h3>Library Operating Systems</h3>
+
+<ol>
+<li>Library operating systems need not multiplex a resource so they can be easuly specialized without consideration of resource management. </li>
+<li>Since lib OSs are treated as untrusted applications by exokernel , lib OS can trust the applications (which makes them easy to design). In case of invalid params to lib OS, exokernel will check the input (since untrusted) and declare it as invalid. No other applications will be effected. </li>
+<li>Finally there will be less kernel crossings since most the OS runs in address space of applications.</li>
+</ol>
+
+<h3>Exokernel Design</h3>
+
+<blockquote>
+<p>The challenge of exokernel is to provide maximum freedom to applications in managing physical resource while protecting them form each other. Exokernel separates protection from management through low level interface</p>
+</blockquote>
+
+<h3>Exokernel Notes</h3>
+
+<p>Deadlock conditions:
+* mutual exclusion
+* non-preemptive
+* ---
+* ---</p>
+
+<p>Thrashing vs Livelock</p>
+
+<p>End-to-end argument: putting reliability in your system, when you have end-to-end reliability checking can only be viewed as optimization.</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

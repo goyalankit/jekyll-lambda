@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>xen - the art of virtualization</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/xen/2014/09/23/xen-the-art-of-virtualization/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/xen/2014/09/23/xen-the-art-of-virtualization/">xen - the art of virtualization</a></h1>
+	    <p class="entry-meta">
+		    Sep 23, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>x86 virtualization challenges</h2>
+
+<ul>
+<li>EFLAGS register has interrupt enable flag(IF). If the kernel is being virtualized it doesn&#39;t have privilage to enable interrupts. Kernel calls pushf and popf all over the place.</li>
+<li>Register cr3 points to the base of page table. Hardware MMU will read cr3 on page faults if the virtual addressing is enabled. VMM can&#39;t trust OS, solved by either shadow page tables (ESX Server) or allowing updates after verification (XEN)</li>
+<li>Untagged TLB means frequent flushes. Addressed with hardware translation.</li>
+</ul>
+
+<h3>Consider page fault</h3>
+
+<p>ESX Server</p>
+<div class="highlight"><pre><code class="language-Ruby" data-lang="Ruby"><span class="no">Guest</span> <span class="ss">application</span><span class="p">:</span> <span class="n">refers</span> <span class="n">to</span> <span class="n">unmapped</span> <span class="n">memory</span> <span class="n">address</span><span class="o">.</span>
+<span class="ss">Hardware</span><span class="p">:</span> <span class="no">TRAP</span><span class="o">!</span> <span class="n">set</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="o">.</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="nb">trap</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="no">Figure</span> <span class="n">out</span> <span class="n">which</span> <span class="n">guest</span> <span class="no">OS</span><span class="p">,</span> <span class="n">clear</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="p">,</span> <span class="n">check</span> <span class="n">shadow</span> <span class="n">page</span> <span class="n">table</span> <span class="p">(</span><span class="ow">or</span> <span class="n">software</span> <span class="no">TLB</span> <span class="n">cache</span><span class="p">),</span> <span class="k">if</span> <span class="n">page</span> <span class="ow">not</span> <span class="n">resident</span><span class="p">,</span> <span class="n">set</span> <span class="n">up</span> <span class="nb">trap</span> <span class="n">registers</span> <span class="k">for</span> <span class="n">guest</span> <span class="no">OS</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="n">that</span> <span class="n">guest</span> <span class="no">OS</span><span class="s1">&#39;s trap handler.</span>
+<span class="s1">Guest OS: Read cr2 to find the faulting address</span>
+<span class="s1">HW: TRAP! You can;t read the cr2; set privileged bit; jump to VMM trap handler.</span>
+<span class="s1">VMM: Read the cr2 and put faulting address it into guest OS register; clear privileged bit.</span>
+<span class="s1">Guest OS: Allocate physical page and write page table entry from VA -&gt; PA</span>
+<span class="s1">HW: TRAP! you can&#39;</span><span class="n">t</span> <span class="n">write</span><span class="p">(</span><span class="no">READ</span><span class="o">-</span><span class="no">ONLY</span> <span class="n">access</span><span class="p">)</span> <span class="n">to</span> <span class="n">page</span> <span class="n">table</span><span class="o">.</span> <span class="n">set</span> <span class="n">privilaged</span> <span class="n">bit</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="no">Allocate</span> <span class="n">a</span> <span class="n">page</span> <span class="n">of</span> <span class="n">machine</span> <span class="n">memory</span><span class="p">,</span><span class="n">record</span> <span class="no">PA</span><span class="o">-&gt;</span><span class="no">MA</span> <span class="n">mapping</span> <span class="ow">and</span> <span class="n">install</span> <span class="n">it</span> <span class="k">in</span> <span class="n">shadow</span> <span class="n">page</span> <span class="n">table</span><span class="p">;</span> <span class="n">clear</span> <span class="n">privileged</span> <span class="n">bit</span><span class="p">;</span> <span class="k">return</span> <span class="n">to</span> <span class="n">guest</span> <span class="no">OS</span> <span class="nb">trap</span> <span class="n">handler</span><span class="o">.</span>
+<span class="no">Guest</span> <span class="ss">OS</span><span class="p">:</span> <span class="n">everything</span> <span class="n">worked</span> <span class="n">fine</span><span class="o">.</span> <span class="sb">`iret`</span> <span class="no">Clear</span> <span class="n">the</span> <span class="n">privileged</span> <span class="n">bit</span> <span class="ow">and</span> <span class="k">return</span> <span class="n">to</span> <span class="n">guest</span> <span class="n">handler</span>
+<span class="ss">HW</span><span class="p">:</span> <span class="no">TRAP</span><span class="o">!</span> <span class="p">(</span><span class="n">you</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">get</span> <span class="n">to</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">priveleged</span> <span class="n">bit</span><span class="p">);</span> <span class="n">set</span> <span class="n">privileged</span><span class="p">;</span> <span class="n">jump</span> <span class="n">to</span> <span class="no">VMM</span> <span class="n">handler</span>
+<span class="ss">VMM</span><span class="p">:</span> <span class="sb">`iret`</span> <span class="n">to</span> <span class="n">guest</span> <span class="n">application</span>
+</code></pre></div>
+<h3>XEN</h3>
+
+<p><strong>For each privilage level, a separate stack is maintained.</strong></p>
+
+<p>Guest OS runs in Ring 1, Application runs in Ring 4 and VMM runs in Ring 0.</p>
+
+<p>When application is executing it has its own stack in Ring 4, now when we have a page fault, hardware traps and calls the trap handler. Trap handler is directly registered by Guest OS (though validated by XEN). Trap handeling code runs in Ring 1 (guest OS)</p>
+
+<h4>Memory:</h4>
+
+<ul>
+<li>Guest OSes allocates and manage hardware page tables.</li>
+<li>Guest OS allocates and registers with xen giving away its write privileges.</li>
+<li>All updates (using hyper calls) need to be validated by XEN.</li>
+<li>XEN registers page tables directly with MMU.</li>
+<li>To aid validation frames are marked: page directory, page table, local descriptor table, global des. tab., Writable.</li>
+</ul>
+
+<h4>CPU:</h4>
+
+<ul>
+<li>basic assumption: os is most privileged., rings help.</li>
+<li><p>Privileged instructions are paravirtualized by requiring them to be validated and executed within xen. Any guest os attempt to execute privileged instruction: failed by processor (silently or trap).</p></li>
+<li><p>Exceptions and trap are virtualized straightforwardly. A table describing the handler for each type is registered with XEN for validation. exception stack frames are unmodified in paravirt.</p></li>
+<li><p>Excepions can be directly handled by hardware, but page faults need to go through XEN.</p></li>
+<li><p>Page fault handler would read cr2(not possible), copy it to the extended stack frame.</p></li>
+<li><p>On page fault, xen copies stack frame to guest os and return control to registered handler.Trap handlers (guest OS) are in Ring 1. CR2 is in ring 0. M2P</p></li>
+</ul>
+
+<h4>Device I/O</h4>
+
+<ul>
+<li>clean and simple abstractions.</li>
+<li>interrupts -&gt; lightweight event delivery mechanism.</li>
+</ul>
+
+<h4>Control and Management:</h4>
+
+<ul>
+<li>Hypervisor will be involved in scheduling but there is no need to be involved in high level details such as how to share the CPU among domains. or what kind of packets a domain can transfer.</li>
+<li>Hypervisor provides control operations through an interace accessible from authorized domains.</li>
+<li>Domain 0 is created at boot time and has access to control interface and is responsible for application level management software.</li>
+<li>Control interface provides the ability to create/destrot domains, their scheduling parameters, physical memory allocations and access they are given to physical resources like physical disk and network devices.
+*</li>
+</ul>
+
+<h3>Class Notes:</h3>
+
+<p>Domain 0 - is a VM. Device drivers are put inside domain 0.</p>
+
+<p>write a block of data ==&gt; goes to VMM ==&gt; goes to VM (converting it to actual blocks).</p>
+
+<hr>
+
+<p>Not XEN RELATED
+Hardware virtualization
+system calls and page faults don&#39;t trap.</p>
+
+<p>VA - PT - PA</p>
+
+<p>VMWare
+VA - Shadow PT - MA
+PA - PMAP - MA</p>
+
+<p>Shadow tables - per guest application. Since it maps from VA.
+PMAP is per guest OS</p>
+
+<p>Extended page table - per VM or per guest.</p>
+
+<p>A VM has well defined PA space</p>
+
+<p>Two ways of VMM</p>
+
+<p>Build it into operating system.
+OS like explicitly running.</p>
+
+<p>ESX server(special purpose VMM) vs ESX workstation (general purpose os)</p>
+
+<p>Double Paging - two different pieces of software working on it.</p>
+
+<p>Force guest OS to use it&#39;s own paging algorithm</p>
+
+<h4>information on exceptions and interrupt handlers</h4>
+
+<p>http://cse.unl.edu/~goddard/Courses/CSCE351/IntelArchitecture/IntelInterupts.pdf</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

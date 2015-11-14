@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Threads and Input/Output in the Synthesis Kernel</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/paper/2014/09/10/threads-and-i-slash-o-in-the-synthesis-kernel/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/paper/2014/09/10/threads-and-i-slash-o-in-the-synthesis-kernel/">Threads and Input/Output in the Synthesis Kernel</a></h1>
+	    <p class="entry-meta">
+		    Sep 10, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.51.3887
+Published: 1989</p>
+
+<p>Synthesis operating system kernel combines several techniques to provide high performance, including kernel code synthesis, fine grain scheduling and optimistic synchronization.</p>
+
+<p>Goals:
+1. High performance
+2. self-tuning capability to dynamic load and configuration changes
+3. a simple, uniform and intuitive model of computation with a high-level interface</p>
+
+<p>Two kind of objects supported by synthesis kernel: Threads and I/O</p>
+
+<h3>Synthesis model of computation</h3>
+
+<p>To support parallel and distributed computing, the threads of execution form a directed graph, in which the nodes are threads and the arcs are data flow channels.</p>
+
+<p>Synthesis threads are threads of execution. Some threads never execute user-level code, but run entirely within kernel to provide additional concurrency for some kernel operations. Threads execute program in quaspace (quasi address space) which also stores data. Finally, I/O devices move data between threads including files and messages.</p>
+
+<h4>No virtual memory in current implementation</h4>
+
+<p>On one physical node, all the synthesis quaspaces are subspaces of one single address space. Kernel blanks out parts of address space that each quaspace is not supposed to see. Since they are part of same quaspace, it is easy to share memory by setting their address mappings.</p>
+
+<h2>Kernel Code Synthesis</h2>
+
+<ol>
+<li>Factoring invariants: bypasses redundant computations.</li>
+<li>The Collapsing layer method eliminates unnecessary procedure calls and context switches, both vertically for layered modules and horizontally for pipelined threads.</li>
+<li>The executable data structure method shorten the data structure traversal time when DS is travelled always the same way.</li>
+</ol>
+
+<p>Synthesis kernel can be devided into a number of (collections of procedures and data). These collection of procedures are called - quajects that encapsulate hardware resources (provide interface to hardware through quajects). Important quajects include threads and I/O devices servers.</p>
+
+<p>Threads (quajects, that encapsulate hardware) are abstraction of CPU. The device servers are abstraction of I/O devices. Except from threads, quajects consist only of procedures and data.</p>
+
+<p>quajects don&#39;t support inheritance or any other feature, events such as interrupts start the threads that animate the quajects and do work.</p>
+
+<p>Building blocks of quajects:</p>
+
+<ol>
+<li>monitors, queues and schedulers.</li>
+<li>switches (equivalent to C switch statement, direct interrupts to the appropriate servie routines), pumps (contains thread that actively copies its input into its output.) and guages (counts events like procedure calls, data arrival and interrupts; used by scheduler).</li>
+</ol>
+
+<p>pumps connect passive producers to passive consumers.</p>
+
+<h3>Queues</h3>
+
+<p>Queue Type =&gt; Synchronous (blocks at empty or full) and Asynchronous(signals at those conditions) =&gt; dedicated (only 1 producer or consumer, omits synchronization) and optimistic queues (accepts queue insert and delete from multiple prod;cons;)</p>
+
+<h3>Threads are created by <strong>Quaject Creator</strong> in 3 stages</h3>
+
+<ol>
+<li><strong>Allocation</strong> - allocate memory - for quaject and procedures.</li>
+<li><strong>Factorization</strong> - uses factorizing invariants to substitute constants into quaject&#39;s code templates.</li>
+<li><strong>Optimization</strong> - do peephole optimizations.</li>
+</ol>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># mnemonic
+ -----\|\ -&gt; [  - - \ - | \]  -&gt; [ - - - c \ - c | ] -&gt; [ - - - - c - - c ]
+</code></pre></div>
+<h3>Quaject Interfacer</h3>
+
+<p>Starts the execution of existing quajects by installing (load procedures and data) them in invoking thread. 4 Stages:</p>
+
+<ol>
+<li>find connecting mechanism (queue, monitor, pump or a simple procedure call) from 1 quaject to another.</li>
+<li>Factorization and Optimization (Run time).</li>
+<li>Dynamic link stage stores synthesized code&#39;s entry points to the quajects.</li>
+</ol>
+
+<h3>Reducing Synchronization</h3>
+
+<p>Three methods to reduce Synchronization:</p>
+
+<ol>
+<li>Code Isolation (synchronization avoidance) -&gt; kernel synthesis to separate independent modification of DS. e.g., Thread Table Entry (lock global table -&gt; change local tables)</li>
+<li>Procedure Chaining ( &quot;&quot; ) -&gt; serializes the execution of conflicting threads. Signal during interrupt handling could be dangerous, so chain the prodedure invoked by signal to the end of interrupt handler (replace the return address - effecient.)</li>
+<li>Optimistic Synchronization - update without synchronization, test at the end - if something bad happened -&gt; rollback and retry.</li>
+</ol>
+
+<h3>Optimistic Queues</h3>
+
+<p>Queues are important since lot of functionality is implemented using queues. Four types - SP-SC, SP-MC, MP-SC, MP-MC</p>
+
+<ul>
+<li><p><strong>SP-SC</strong> - synchronization is only necessary when queue becomes empty or full. Usually busy wait.
+Solution: update the pointer (Q-head for producer, Q-tail for consumer) at the very end. In later architectures, you may have to put memory fence to ensure store order.</p></li>
+<li><p><strong>MP-SC</strong> - compare-and-swap instruction + retry loop.
+Now producers claim the space first by incrementing the Qhead and if successful they start inserting the elements. Consumers can&#39;t trust the head now, so producers update flags corresponding to queue positions indicating if the element is valid.</p></li>
+</ul>
+
+<p>Compare and swap is atomic, so they update a local pointer and see if it&#39;s valid. If it&#39;s valid then they swap it with head. -&gt; all other producers will see the updated head now while the current producer is inserting elements on claimed space.</p>
+
+<h3>Threads</h3>
+
+<p>The thread state is defined by TTE containing register save area, interrupt handlers, error traps and signal vectors; the address map tables, <strong>context-switch-in and out procedures</strong>.</p>
+
+<p>Kernel generates some code for threads in a protected area - custom system calls, synthesized interrupt handlers such as for queue buffering, specialized eror trap handlers and thread calls (start, stop, etc.)</p>
+
+<ul>
+<li>Thread switches to supervisor mode while running kernel call instead of kernel server running it for the thread. Kernel quaspace is made accessible.</li>
+</ul>
+
+<p>Waiting queue is spread accross resources and waiting thread&#39;s unblocking procedure is chained to the end of interrupts handler.</p>
+
+<h3>Context Switch</h3>
+
+<ol>
+<li><p>Switch only the part of context being used. (most of the processes don&#39;t use FP co-processor so don&#39;t save state [default synthesized code] until used[then resynthsize code]).</p></li>
+<li><p>use executable data structures to minimize critical path. - No &quot;dispatcher&quot; - context-switch-out of 1 process contains jmp to context-switch-in for next process.</p></li>
+</ol>
+
+<h3>Signal</h3>
+
+<p>Signal is an asynchronous software interrupt sent by a thread to another. Signal system call modifies a general area so that receiving thread can run the signal handler code in used mode.</p>
+
+<h3>Scheduling</h3>
+
+<p>Fine grained quanta to threads - based on &quot;need to execute&quot; determined by rate at with I/O data flows into and out of its quaspace.</p>
+
+<p>Effective CPU = Quanta to thread / Quanta to all threads</p>
+
+<p>priority -&gt; assigning large quanta or placing in front of ready queue.</p>
+
+<h3>I/O</h3>
+
+<p>At boot time, kernel creates the servers for raw physical devices. A simple example pipelines the raw input from tty to filters. multiple filters may be applied during the process.</p>
+
+<h3>Producer/Consumer in I/O</h3>
+
+<p>Active producer - Passive Consumer (or vice versa). In case of SP-SC, a procedure call from consumer asking producer for data does the job.</p>
+
+<p>For MP-SC or SP-MC, attach monitor at the multiple end resulting in MP-SC or SP-MC queues.</p>
+
+<p>Passive producer - Passive Consumer -&gt; xclock -&gt; clock producer ready to produce time and clock displayer ready to display at all times. We use PUMP here that reads from one end and writes to another.</p>
+
+<h3>Interrupt Handlers</h3>
+
+<p>Each threads has its own synthesized interrupt handellers and system calls. Lot of interrupts can be handelled in current execution thread only so minimal saving of registers is required and it avoid a context switch. During short level interrupt, higher level interrupts may happend and those inerrupts are chained.</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

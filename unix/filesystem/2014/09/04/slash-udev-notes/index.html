@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>/udev notes</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Problems with /dev
+
+
+A static /dev is unwiedly big. It would be nice to show only /dev enteries for the devices that we acutally have running in the system.
+We are running out of major and minor number for devices.
+
+  [vagrant@vagrant-centos64 ~]$ ls -l /dev/sda
+  brw-rw---- 1 root disk 8, 0 Aug 14 05:36 /dev/sda
+
+  # shows permissions (brw-rw---- ), owner (root), group (disk), major device number (8),
+    minor device number (0), date (Aug 14), hour (05:36) and device name
+
+When accessing a device file, the major device number selects which device driver is being called to perform read/write. Minor number is passed as a parameter and its usage/interpretations depends on the driver.
+
+
+Users want a way to name devices in persistant fashion.
+Userspace programs wants to know what devices are created or removed and what /dev entry is associated with them.
+
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/unix/filesystem/2014/09/04/slash-udev-notes/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/unix/filesystem/2014/09/04/slash-udev-notes/">/udev notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 4, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h3>Problems with <code>/dev</code></h3>
+
+<ol>
+<li>A static /dev is unwiedly big. It would be nice to show only /dev enteries for the devices that we acutally have running in the system.</li>
+<li>We are running out of major and minor number for devices.</li>
+</ol>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">  <span class="o">[</span>vagrant@vagrant-centos64 ~<span class="o">]</span><span class="nv">$ </span>ls -l /dev/sda
+  brw-rw---- <span class="m">1</span> root disk 8, <span class="m">0</span> Aug <span class="m">14</span> 05:36 /dev/sda
+
+  <span class="c"># shows permissions (brw-rw---- ), owner (root), group (disk), major device number (8),</span>
+    minor device number <span class="o">(</span>0<span class="o">)</span>, date <span class="o">(</span>Aug 14<span class="o">)</span>, hour <span class="o">(</span>05:36<span class="o">)</span> and device name
+</code></pre></div>
+<p>When accessing a device file, the major device number selects which device driver is being called to perform read/write. Minor number is passed as a parameter and its usage/interpretations depends on the driver.<br/></p>
+
+<ol>
+<li>Users want a way to name devices in persistant fashion.</li>
+<li>Userspace programs wants to know what devices are created or removed and what /dev entry is associated with them.</li>
+</ol>
+
+<!-- more -->
+
+<h3><code>udev</code></h3>
+
+<p>Presentation on udev: http://www.kroah.com/linux/talks/ols<em>2003</em>udev_talk/mgp00001.html</p>
+
+<ol>
+<li>the /dev tree is populated only for devices that are currently present in the system.</li>
+<li>udev doesn&#39;t care about major or minor number schemes.</li>
+<li>It provides ability to name devices persistently.</li>
+<li>udev emites D-BUS messages so that any userspace program can listen to what devices are created or removed. Userspace programs can also query the database to see what devices are present and what they are currently named.</li>
+</ol>
+
+<h3>Dynamic <code>/dev</code></h3>
+
+<p>The content of /dev directory are stored on a temporary file system and all files are render at every system startup. Static files that should always be present in /dev directory can be placed in /lib/udev/devices directory. All the contents of /lib/udev/devices directory are copied to /dev at startup.</p>
+
+<blockquote>
+<p>how does kernel knows which device driver to choose without major or minor device number.</p>
+</blockquote>
+
+<p>The kernel bus drivers probe for devices. For every detected devices kernel creates an internal device structure and sends a uevent to udev deamon. Each devices identifies itself by specially-formatted ID, which tells what kind of device it is. It usually consists of vendor ID, product ID and other subsystem specific values.</p>
+
+<p><code>/etc/udev/rules.d/*.rules</code> contains rules for different devices and <code>udev</code> deamon parses and loads all of them at the startup.</p>
+
+<p>More Info at:
+http://doc.opensuse.org/products/draft/SLES/SLES-admin<em>sd</em>draft/cha.udev.html#sec.udev.devdir</p>
+
+<hr/>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

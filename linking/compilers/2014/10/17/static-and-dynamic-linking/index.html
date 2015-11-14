@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>static and dynamic linking</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="// add.h
+int add(int, int);
+
+// sub.h
+int sub(int, int);
+
+Create the corressponding c files.
+// add.c
+int add(int i, int j) {
+  return i + j;
+}
+
+// sub.c
+int sub(int i, int j) {
+  return i - j;
+}
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/linking/compilers/2014/10/17/static-and-dynamic-linking/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linking/compilers/2014/10/17/static-and-dynamic-linking/">static and dynamic linking</a></h1>
+	    <p class="entry-meta">
+		    Oct 17, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<div class="highlight"><pre><code class="language-C" data-lang="C"><span class="c1">// add.h</span>
+<span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+
+<span class="c1">// sub.h</span>
+<span class="kt">int</span> <span class="nf">sub</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</code></pre></div>
+<p>Create the corressponding c files.</p>
+<div class="highlight"><pre><code class="language-C" data-lang="C"><span class="c1">// add.c</span>
+<span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// sub.c</span>
+<span class="kt">int</span> <span class="nf">sub</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<!-- more -->
+<div class="highlight"><pre><code class="language-text" data-lang="text">// demo.c
+#include &lt;stdio&gt;
+#include &quot;add.h&quot;
+#include &quot;sub.h&quot;
+
+printf(&quot;Sum of %d and %d is %d&quot;, i, j, add(i, j));
+printf(&quot;Difference of %d and %d is %d&quot;, i, j, sub(i, j));
+</code></pre></div>
+<h2>Static Libraries</h2>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$ </span>gcc -c add.c
+<span class="nv">$ </span>gcc -c sub.o
+
+<span class="nv">$ </span>ar rs libheymath.a add.o sub.o
+
+<span class="nv">$ </span>gcc -c demo.c
+<span class="nv">$ </span>gcc -o demo.out -L . demo.o -lheymath
+</code></pre></div>
+<h3>.symtab</h3>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">    Num:    Value          Size Type    Bind   Vis      Ndx Name
+    55: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+    56: <span class="m">0000000000601038</span>     <span class="m">0</span> OBJECT  GLOBAL HIDDEN    <span class="m">24</span> __dso_handle
+    57: 000000000040058c    <span class="m">20</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> sum
+    58: <span class="m">0000000000400640</span>     <span class="m">4</span> OBJECT  GLOBAL DEFAULT   <span class="m">15</span> _IO_stdin_used
+    59: 00000000004005c0   <span class="m">101</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> __libc_csu_init
+    60: <span class="m">0000000000601048</span>     <span class="m">0</span> NOTYPE  GLOBAL DEFAULT   <span class="m">25</span> _end
+    61: <span class="m">0000000000400440</span>     <span class="m">0</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> _start
+    62: <span class="m">0000000000601040</span>     <span class="m">0</span> NOTYPE  GLOBAL DEFAULT   <span class="m">25</span> __bss_start
+    63: 000000000040052d    <span class="m">95</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> main
+    64: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND _Jv_RegisterClasses
+    65: <span class="m">0000000000601040</span>     <span class="m">0</span> OBJECT  GLOBAL HIDDEN    <span class="m">24</span> __TMC_END__
+    66: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+    67: 00000000004005a0    <span class="m">22</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> sub
+    68: 00000000004003e0     <span class="m">0</span> FUNC    GLOBAL DEFAULT   <span class="m">11</span> _init
+</code></pre></div>
+<h2>Dynamic Libraries</h2>
+
+<p>Dynamic libraries need to be created explicitly. They take less space since they can be shared and used functions are not put in executable.</p>
+
+<p>Note that dynamic libraries introduce dependencies and the executable cannot be run directly on another system.</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$ </span>gcc -Wall -fPIC -c add.c
+<span class="nv">$ </span>gcc -Wall -fPIC -c sub.c
+
+<span class="nv">$ </span>gcc -shared -o libheymath.so add.o sub.o
+<span class="nv">$ </span>sudo cp libheymath.so /usr/lib/
+<span class="nv">$ </span>ldconfig /usr/lib/libheymath.so
+<span class="nv">$ </span>gcc -o demo.out demo.o -lheymath
+</code></pre></div>
+<p>Dependencies can be checked using <code>ldd</code></p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ ldd demo.out
+
+    linux-vdso.so.1 =&gt;  (0x00007fffe5bfe000)
+    libheymath.so =&gt; /usr/lib/libheymath.so (0x00007fdc19d77000)
+    libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fdc199b1000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007fdc19f95000)
+</code></pre></div>
+<h2>.symtab</h2>
+
+<p>Notice that the sub and add are have undefined index and will be resolved at runtime.</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">    Num:    Value          Size Type    Bind   Vis      Ndx Name
+    53: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+    54: <span class="m">0000000000601048</span>     <span class="m">0</span> OBJECT  GLOBAL HIDDEN    <span class="m">24</span> __dso_handle
+    55: <span class="m">0000000000000000</span>     <span class="m">0</span> FUNC    GLOBAL DEFAULT  UND sum
+    56: <span class="m">0000000000400800</span>     <span class="m">4</span> OBJECT  GLOBAL DEFAULT   <span class="m">15</span> _IO_stdin_used
+    57: <span class="m">0000000000400780</span>   <span class="m">101</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> __libc_csu_init
+    58: <span class="m">0000000000601058</span>     <span class="m">0</span> NOTYPE  GLOBAL DEFAULT   <span class="m">25</span> _end
+    59: <span class="m">0000000000400630</span>     <span class="m">0</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> _start
+    60: <span class="m">0000000000601050</span>     <span class="m">0</span> NOTYPE  GLOBAL DEFAULT   <span class="m">25</span> __bss_start
+    61: 000000000040071d    <span class="m">95</span> FUNC    GLOBAL DEFAULT   <span class="m">13</span> main
+    62: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND _Jv_RegisterClasses
+    63: <span class="m">0000000000601050</span>     <span class="m">0</span> OBJECT  GLOBAL HIDDEN    <span class="m">24</span> __TMC_END__
+    64: <span class="m">0000000000000000</span>     <span class="m">0</span> NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+    65: <span class="m">0000000000000000</span>     <span class="m">0</span> FUNC    GLOBAL DEFAULT  UND sub
+    66: 00000000004005b0     <span class="m">0</span> FUNC    GLOBAL DEFAULT   <span class="m">11</span> _init
+</code></pre></div>
+<h2>References:</h2>
+
+<ol>
+<li>http://cs-fundamentals.com/c-programming/static-and-dynamic-linking-in-c.php</li>
+</ol>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

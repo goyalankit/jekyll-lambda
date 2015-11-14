@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Concurrent Objects</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Method calls take time whereas method calls by a single thread are always sequential.
+
+Compositional
+
+A correctness property P is compositional if, whenever each object in system satisfies P, the system as a whole satisifies P. Basically we can compose objects satisfying a property P to create a more complex system that also satisfies P. For example, Quiescence.
+
+
+
+Quiescent Consistency
+
+Principles:
+
+
+Method calls should appear in one-in-a-time sequential order. --| trivial |
+Method calls separated by a period of quiescence should appear to take effect in real-time order.
+
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/2014/11/17/concurrent-objects/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/2014/11/17/concurrent-objects/">Concurrent Objects</a></h1>
+	    <p class="entry-meta">
+		    Nov 17, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Method calls take time whereas method calls by a single thread are always sequential.</p>
+
+<h3>Compositional</h3>
+
+<p>A correctness property P is compositional if, whenever each object in system satisfies P, the system as a whole satisifies P. Basically we can compose objects satisfying a property P to create a more complex system that also satisfies P. For example, Quiescence.</p>
+
+<hr>
+
+<h3>Quiescent Consistency</h3>
+
+<p>Principles:</p>
+
+<ol>
+<li>Method calls should appear in one-in-a-time sequential order. --| <strong>trivial</strong> |</li>
+<li>Method calls separated by a period of quiescence should appear to take effect in real-time order.</li>
+</ol>
+
+<!-- more -->
+<div class="highlight"><pre><code class="language-text" data-lang="text"># not quiescent
+
+Thread A --------------------|    r.write(7)    |----------------------------------------&gt;
+
+Thread B ---------------------- |  r.write(-3)    |-----------| r.read(-7) |-------------&gt;
+
+---------------------------------------------------- ******* -----------------------------
+
+****** period of quiescence
+</code></pre></div>
+<ol>
+<li>Property one ensures that we read a valid value. However one can read the old value always.</li>
+<li>So in the above example, we should either read 7 or 3 since there&#39;s a period of quiescence</li>
+</ol>
+
+<p>Informally,</p>
+
+<ul>
+<li>it says that any time an object becomes quiescent, then the execution so far is equivalent to some sequential execution of the completed calls.</li>
+<li>all operations appear to occur in some sequential order</li>
+<li>non-overlapping operations appear to occur in real-time order.</li>
+<li>Program order may not be preserved. I enque x and then y; deque operation overlaps both enqueues, you can come up with y.</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># program order not preserved. Since no period of quiescence. But this is Quiescent Consistent.
+
+Thread A --------------------|    r.enq(7)  |-------|  r.enq(-3)-----------------------&gt;
+
+Thread B ------------------------------|   r.deq(-3)    |------------------------------&gt;
+</code></pre></div>
+<h4>Properties</h4>
+
+<ul>
+<li>non blocking</li>
+<li>compositional</li>
+<li>doesn&#39;t respect the program order</li>
+<li>Quiescenly consistent with time</li>
+<li>Cannot touch multiple objects.</li>
+<li>equivalent to sequential order</li>
+</ul>
+
+<hr>
+
+<h3>Sequential Consistency</h3>
+
+<p>Principles:</p>
+
+<ol>
+<li>Method calls should appear to take effect in program order.</li>
+<li>Method calls should appear in one-in-a-time sequential order. --| <strong>trivial</strong> |</li>
+</ol>
+
+<ul>
+<li>consistent with program order</li>
+<li>meet the object&#39;s sequential specification</li>
+</ul>
+
+<hr>
+
+<h2>Linearizability and sequential consistency</h2>
+
+<p>Linearizability: methods all at-a-time</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>cgroup basics</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/linux/cgroups/2014/09/15/cgroup-basics/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linux/cgroups/2014/09/15/cgroup-basics/">cgroup basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 15, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: https://www.kernel.org/doc/Documentation/cgroups/cgroups.txt</p>
+
+<h1>CGROUPS</h1>
+
+<p>Control <strong>Groups</strong> provide a mechanism for aggregation/participating sets of tasks, and all their future children, into hierarchical groups with specialized behaviour.</p>
+
+<hr>
+
+<h1>Definitions</h1>
+
+<h3>cgroup</h3>
+
+<p>A <strong>cgroup</strong> associates a set of tasks with a set of parameters for one or more subsystems.</p>
+
+<p>Term              | Example
+------------------|---------
+Set of Tasks      | process ids
+Set of parameters | 1 or 2 CPUs
+Subsystem         | CPUSET, MEMORY % or nodes.</p>
+
+<hr>
+
+<h3>subsystem</h3>
+
+<p>A <strong>subsystem</strong> is a module that makes use of the task grouping facilities provided by cgroup to treat group of tasks in particular ways.</p>
+
+<ul>
+<li>c<code>**group**</code> provides the grouping of tasks with a set of parameters.</li>
+</ul>
+
+<p>A subsystem is typically a <code>&quot;resource controller&quot;</code> that schedules a resource or applies per-cgroup limits. But it may be anything that wants to act on a group of processes e.g. a virtualization subsystem.</p>
+
+<h3>Hierarchy</h3>
+
+<p>A <strong>hierarchy</strong> is a set of cgroups arranged in a tree, such that every task in the system is in exactly one of the cgroups in the hierarchy, and a set of subsystems; each sub-system has system specific state attached to each cgroup in the hierarchy. Each hierarchy has an instance of the cgroup virtual filesystem associated with it.</p>
+
+<p>Rule 1. A single hierarchy can have one or more subsystems attached to it.</p>
+
+<p>Example: You create a single hierarchy for memory and cpu. It&#39;s good if you have one to one mapping. You can have:</p>
+
+<ol>
+<li><code>/cg1</code>: 40% memory, 60% CPU</li>
+<li><code>/cg2</code>: 60% memory, 40% CPU</li>
+</ol>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule1.png" width="500"></p>
+
+<p>Rule 2: Any single subsystem (such as cpu) subsystem cannot be attached to more than one hierarchy if one of those hierarchies has a different subsystem attached to it already.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule2.png" width="500"></p>
+
+<p>Rule 3: A task can belong to only one cgroup in a hierarchy. All tasks on a system by default are member of default cgroup of that hierarchy, which is known as root cgroup.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule3.png" width="500"></p>
+
+<p>Rule 4: Any process that forks itself creates a child task. By default child task inherits the cgroup membership of its parent but can be moved to different cgroups as needed.</p>
+
+<p><img src="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Resource_Management_Guide/images/RMG-rule4.png" width="500"></p>
+
+<p>source: https://access.redhat.com/documentation/en-US/Red<em>Hat</em>Enterprise<em>Linux/6/html/Resource</em>Management<em>Guide/sec-Relationships</em>Between<em>Subsystems</em>Hierarchies<em>Control</em>Groups<em>and</em>Tasks.html</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

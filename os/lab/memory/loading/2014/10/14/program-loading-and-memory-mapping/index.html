@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>program loading and memory mapping</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="arch_prctl(ARCH_SET_FS, addr)
+
+From man page:
+
+
+set architecture specific thread state
+
+
+
+ARCH_SET_FS: set the 64-bit base address for the FS register to addr
+
+Earlier kernel used to store an array indexed by threadid containing address of thread space, however now it sets the FS register for threads local storate.
+GS is used for kernel threads storage pointer whereas FS is used for userspace threads.
+
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/">program loading and memory mapping</a></h1>
+	    <p class="entry-meta">
+		    Oct 14, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2><code>arch_prctl(ARCH_SET_FS, addr)</code></h2>
+
+<p>From man page:</p>
+
+<blockquote>
+<p>set architecture specific thread state</p>
+</blockquote>
+
+<ul>
+<li><p><code>ARCH_SET_FS</code>: set the 64-bit base address for the <code>FS</code> register to <code>addr</code></p>
+
+<p>Earlier kernel used to store an array indexed by threadid containing address of thread space, however now it sets the FS register for threads local storate.
+<code>GS</code> is used for kernel threads storage pointer whereas <code>FS</code> is used for userspace threads.</p></li>
+</ul>
+
+<!-- more -->
+
+<h2>ELF Format:</h2>
+
+<h2>Creating the memory image of a new process</h2>
+
+<p>sys<em>execve is responsible for setting up the environment for running the program. Below are the steps taken by sys</em>execve which calls do<em>execve</em>common:</p>
+
+<ol>
+<li>Check that <code>NPROC</code> limit is not exceeded (i.e.,total number of process), if it is then exit.(<code>L:1443</code>)</li>
+<li>Allocate memory for data structure in kernel.(<code>L:1458</code>)</li>
+<li>Open the exec file using <code>do_open_exec</code>(<code>L:1469</code>)</li>
+<li>Now the kernel data structures are initialized and <code>exec_binprm</code> is called.</li>
+<li><code>exec_binprm</code> calls <code>search_binary_handler</code> which finds the binary format handler, in our case elf. So it finds load<em>elf</em>binary. (fs/binfmt_elf.c L:84 and 571)
+
+<ul>
+<li><code>load_elf_binary</code> does consistency checks by making sure that it’s an ELF format file by comparing the main number and ELF in <code>e_ident</code> field in header.</li>
+<li><code>load_elf_binary</code> reads the header information and looks for <code>PT_INTERP</code> segment to see if an inter- preter was specified. This segment is only present for dynamically linked programs and not for statically linked.</li>
+<li>Now all the loadable segments are mmapped into memory, by reading the ELF Program headers. <code>bss</code> segment is also mapped.</li>
+<li><code>create_elf_tables</code> creates a stack at a random offset and sets the auxiliary vectors, arguments and environments according to the standard.</li>
+<li>Finallythecontrolistransferredtoe<em>entrypointusingstart</em>threadmethod.(<code>fs/binfmt_elf.cL:990</code>)</li>
+</ul></li>
+</ol>
+
+<p><img src="/images/post-images/elf.png"/>
+source: Professional Linux Kernel Architecture</p>
+
+<p><img src="/images/post-images/elf2.png"/>
+source: stackoverflow.com</p>
+
+<h2>Change the .text entry address in ELF</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text">gcc test1.c -o test1.out -Wl,-Ttext-segment=0x2000000 -static
+</code></pre></div>
+<p>http://stackoverflow.com/questions/8116648/why-is-the-elf-entry-point-0x8048000-not-changeable?lq=1</p>
+
+<h1>entry point vs Load Address</h1>
+
+<p>First LOAD specifies the program code in the file.
+start(glibc) is the entry point and not the address in LOAD.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">start -&gt; init -&gt; main
+</code></pre></div>
+<h2>Stack Growth</h2>
+
+<p><img src="http://i.imgur.com/ynPxqhZ.png?2"/></p>
+
+<h2>Links for ELF</h2>
+
+<ol>
+<li>http://www.skyfree.org/linux/references/ELF_Format.pdf</li>
+<li>http://articles.manugarg.com/aboutelfauxiliaryvectors.html</li>
+</ol>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

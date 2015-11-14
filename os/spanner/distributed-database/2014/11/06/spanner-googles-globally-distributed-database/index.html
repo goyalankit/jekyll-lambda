@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Spanner: Google's Globally Distributed Database</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Spanner: Database that shards data across many set of Paxos state machines in data centers spread accross the world.
+
+Time API
+
+Sawtooth peak when executing, comes back when synced from server.
+
+Smax: largest timestamp till relpica is up to date.
+
+Leases
+
+leaders participate in local and distributed transactions. So it&#39;s better to have leaders for long time. Auto released after expiration.
+
+extend the lease:
+- leader can ssign timestamp to lease in future.
+- leader can try to extend it&#39;s lease to make sure it&#39;s present when transaction happens.
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/">Spanner: Google's Globally Distributed Database</a></h1>
+	    <p class="entry-meta">
+		    Nov 6, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>Spanner</strong>: Database that shards data across many set of Paxos state machines in data centers spread accross the world.</p>
+
+<h3>Time API</h3>
+
+<p>Sawtooth peak when executing, comes back when synced from server.</p>
+
+<p>Smax: largest timestamp till relpica is up to date.</p>
+
+<h3>Leases</h3>
+
+<p>leaders participate in local and distributed transactions. So it&#39;s better to have leaders for long time. Auto released after expiration.</p>
+
+<p>extend the lease:
+- leader can ssign timestamp to lease in future.
+- leader can try to extend it&#39;s lease to make sure it&#39;s present when transaction happens.</p>
+
+<!-- more -->
+
+<h3>Snapshot isolation: all reads satisfied from the image.</h3>
+
+<ul>
+<li>not as strong as strict serializability.</li>
+<li>supported using Tsafe -&gt; time when you don&#39;t have prepare transactions.</li>
+</ul>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Precise Miss Analysis for Program Transformation with Caches of Arbitrary Associativity</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/09/12/precise-cache-miss-analysis/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/12/precise-cache-miss-analysis/">Precise Miss Analysis for Program Transformation with Caches of Arbitrary Associativity</a></h1>
+	    <p class="entry-meta">
+		    Sep 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>Source</strong>: http://mrmgroup.cs.princeton.edu/papers/ghosh_asplos98.pdf <br/>
+<strong>Published</strong>: 1998</p>
+
+<p>Currently the gap between memory and processor is addressed by compile- and programmer- applied optimizations like matrix blocking, data structure padding and other program transformations.</p>
+
+<p>This paper defined a CME (cache miss equation framework) which expresses memory references and cache conflict behavious in terms of set of equations.</p>
+
+<p>Two main approaches to automatically improve data locality for loop-oriented programs:</p>
+
+<ol>
+<li><strong>Loop nest restructuring</strong> - <em>includes</em> permutation, tiling (parition loop space into chunks), fusion are used to reorder access patterns. These transformation have usually considered capacity misses in the past, however there could be conflict misses which are difficult to identify and are highly sensitive to problem size and base addresses.</li>
+<li><strong>data layout optimizations</strong> - padding to the data structures.</li>
+</ol>
+
+<hr>
+
+<p>CMEs are a system of <strong>linear Diophantine equations</strong></p>
+
+<p>Assumptions:</p>
+
+<ul>
+<li>Loops are assumed to be normalized, such that step value is 1.</li>
+<li>Consider only perfectly nested loop and some imperfectly nested loop if they have one block between the nests.</li>
+<li>Loops contain no conditional statements.</li>
+<li>All load/store inside loop nest belong only to array.</li>
+</ul>
+
+<h3>Cache Miss Equations</h3>
+
+<h4>Cold Cache Misses</h4>
+
+<ol>
+<li>Either the first access along the direction of vector.</li>
+<li>accesses that have just crossed a memory line boundary along the direction of vector.</li>
+</ol>
+
+<h4>Replacement Miss Equations</h4>
+
+<ol>
+<li>Example: for an access stream - Ra, Rb, Ra. A conflict clearly occurs in direct mapped cache if Ra and Rb maps to same cache line.</li>
+</ol>
+
+<p>This happens:
+<code>
+Memory_Address_of_Ra = Memory_Address_of_Rb + n * Cache Size + Line_Size_Range
+</code></p>
+
+<p>Roughly a conflict occurs if memory addresses accessed differs by multiples of cache size.</p>
+
+<p>In case of k-way set associative cache, a miss occurs if between consecutive access to a memory line, at least k other accesses occur to distinct memory lines that map to the same cache set.</p>
+
+<h3>Algorithm</h3>
+
+<ol>
+<li>Find all reuse vectors along an iteration point.</li>
+<li>Order all reuse vectors in lexicographical order.</li>
+<li>Find potential conflict points: p = i - r</li>
+<li>Solve CME equations for each reuse vector and the solution at a point could belong to cold miss or conflict miss.</li>
+<li>If the solution satisfies cold miss equations, mark them as &quot;intermediate points&quot; otherwise it is a conflict miss.</li>
+</ol>
+
+<p><strong>Set-Associative Cache</strong></p>
+
+<p>Each CME soluction can be summarized using a triple (i,j,n). n denotes the cache &quot;wrap-arounds&quot;, and same value of n indicates the conflict for same memory line.</p>
+
+<p>For k-way associative cache, maintain a set of disctinct conflict points with same n and if the set size exceeds k, we have a conflict.</p>
+
+<h3>Solutions to CMEs</h3>
+
+<h4>Padding</h4>
+
+<p>Find constraints on CMEs using cache base address, dimensions size so that no solution exists for CME. Decide padding based on those constraints.</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

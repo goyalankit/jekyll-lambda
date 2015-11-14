@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>map reduce</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="map: processes a key/value pair to generate a set of intermediate key/value pairs.
+
+reduce: merges all intermediate values associated with same intermediate keys.
+map    (k1, v1)       -&gt; list(k2, v2)
+reduce (k2, list(v2)) -&gt; list(v2)
+
+All the mappers have to finish before reduces can end.
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/map-reduce/os/2014/11/06/map-reduce/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/map-reduce/os/2014/11/06/map-reduce/">map reduce</a></h1>
+	    <p class="entry-meta">
+		    Nov 6, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p><strong>map</strong>: processes a key/value pair to generate a set of intermediate key/value pairs.</p>
+
+<p><strong>reduce</strong>: merges all intermediate values associated with same intermediate keys.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">map    (k1, v1)       -&gt; list(k2, v2)
+reduce (k2, list(v2)) -&gt; list(v2)
+</code></pre></div>
+<p>All the mappers have to finish before reduces can end.</p>
+
+<!-- more -->
+
+<p><img src="http://i.imgur.com/At7gcgY.png?1"></p>
+
+<ul>
+<li>Mappers based on input sets</li>
+<li>Reduces based on number of output files</li>
+<li>Potentially less robust, you lose type information from map to reduce. Possibility of garbage values.</li>
+<li>Mappers read from GFS but write to local file system. Since it&#39;s faster to write locally.</li>
+<li>Reducers again write to GFS.</li>
+</ul>
+
+<h3>Criticism</h3>
+
+<ul>
+<li>Step backwards in programming paradigm.
+
+<ul>
+<li>schemas are good.</li>
+</ul></li>
+<li>Consistency model. Garbage values can creep in.</li>
+<li>No query language.</li>
+<li>More on the database side of the map-reduce.</li>
+<li>No indexes are used.</li>
+<li>Skew is the real problem.</li>
+</ul>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

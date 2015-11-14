@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>concurrency</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="
+Determinism doesn&#39;t effectively solves the problem.
+Symbolic execution
+
+
+Transactions and Concurrency
+
+ACID
+
+Atomicity: All or nothing. Log to clean if system fails. Output commit -&gt; you are screwed.
+Consistency: Internal consistency of the database.
+Isolation: Executes if it were running along.
+Durability: Results will not be lost.
+
+Memory Transactions: no guarantee, what if power goes down.
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/os/concurrency/2014/10/23/concurrency/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/os/concurrency/2014/10/23/concurrency/">concurrency</a></h1>
+	    <p class="entry-meta">
+		    Oct 23, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<ul>
+<li>Determinism doesn&#39;t effectively solves the problem.</li>
+<li>Symbolic execution</li>
+</ul>
+
+<h2>Transactions and Concurrency</h2>
+
+<h3>ACID</h3>
+
+<p><strong>Atomicity:</strong> All or nothing. Log to clean if system fails. Output commit -&gt; you are screwed.
+<strong>Consistency:</strong> Internal consistency of the database.
+<strong>Isolation:</strong> Executes if it were running along.
+<strong>Durability:</strong> Results will not be lost.</p>
+
+<p>Memory Transactions: no guarantee, what if power goes down.</p>
+
+<!-- more -->
+
+<hr>
+
+<p>Isolation: some serial execution this is equivalent to.
+Serializability: One approach to isolation - not dominant. Linearizability is dominant.</p>
+
+<p>Transactions: 2-phase commit, 2-phase locking.</p>
+
+<p>Serializability allows you to opearte on multiple objects.</p>
+
+<p>Serializability and Sequential consistency might not correspond to real time order.
+database - serializability. memory system: read/write.</p>
+
+<p>composable: consisten with real time and doesn&#39;t touch multiple objects.</p>
+
+<p>Single write gets broken into multiple writes inside kernel. Single write is not serializable</p>
+
+<p>http://www.cs.rochester.edu/courses/254/fall2013/notes/12-concurrency</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>notez</title>
+    <description>Blog about whatever.</description>
+    <link>https://goyalankit.github.io/jekyll-lambda/</link>
+    <atom:link href="https://goyalankit.github.io/jekyll-lambda/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 14 Nov 2015 01:21:48 -0800</pubDate>
+    <lastBuildDate>Sat, 14 Nov 2015 01:21:48 -0800</lastBuildDate>
+    <generator>Jekyll v2.2.0</generator>
+    
+      <item>
+        <title>Concurrent Objects</title>
+        <description>&lt;p&gt;Method calls take time whereas method calls by a single thread are always sequential.&lt;/p&gt;
+
+&lt;h3&gt;Compositional&lt;/h3&gt;
+
+&lt;p&gt;A correctness property P is compositional if, whenever each object in system satisfies P, the system as a whole satisifies P. Basically we can compose objects satisfying a property P to create a more complex system that also satisfies P. For example, Quiescence.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h3&gt;Quiescent Consistency&lt;/h3&gt;
+
+&lt;p&gt;Principles:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Method calls should appear in one-in-a-time sequential order. --| &lt;strong&gt;trivial&lt;/strong&gt; |&lt;/li&gt;
+&lt;li&gt;Method calls separated by a period of quiescence should appear to take effect in real-time order.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!-- more --&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;# not quiescent
+
+Thread A --------------------|    r.write(7)    |----------------------------------------&amp;gt;
+
+Thread B ---------------------- |  r.write(-3)    |-----------| r.read(-7) |-------------&amp;gt;
+
+---------------------------------------------------- ******* -----------------------------
+
+****** period of quiescence
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;Property one ensures that we read a valid value. However one can read the old value always.&lt;/li&gt;
+&lt;li&gt;So in the above example, we should either read 7 or 3 since there&amp;#39;s a period of quiescence&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Informally,&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;it says that any time an object becomes quiescent, then the execution so far is equivalent to some sequential execution of the completed calls.&lt;/li&gt;
+&lt;li&gt;all operations appear to occur in some sequential order&lt;/li&gt;
+&lt;li&gt;non-overlapping operations appear to occur in real-time order.&lt;/li&gt;
+&lt;li&gt;Program order may not be preserved. I enque x and then y; deque operation overlaps both enqueues, you can come up with y.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;# program order not preserved. Since no period of quiescence. But this is Quiescent Consistent.
+
+Thread A --------------------|    r.enq(7)  |-------|  r.enq(-3)-----------------------&amp;gt;
+
+Thread B ------------------------------|   r.deq(-3)    |------------------------------&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;Properties&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;non blocking&lt;/li&gt;
+&lt;li&gt;compositional&lt;/li&gt;
+&lt;li&gt;doesn&amp;#39;t respect the program order&lt;/li&gt;
+&lt;li&gt;Quiescenly consistent with time&lt;/li&gt;
+&lt;li&gt;Cannot touch multiple objects.&lt;/li&gt;
+&lt;li&gt;equivalent to sequential order&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr&gt;
+
+&lt;h3&gt;Sequential Consistency&lt;/h3&gt;
+
+&lt;p&gt;Principles:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Method calls should appear to take effect in program order.&lt;/li&gt;
+&lt;li&gt;Method calls should appear in one-in-a-time sequential order. --| &lt;strong&gt;trivial&lt;/strong&gt; |&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+&lt;li&gt;consistent with program order&lt;/li&gt;
+&lt;li&gt;meet the object&amp;#39;s sequential specification&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr&gt;
+
+&lt;h2&gt;Linearizability and sequential consistency&lt;/h2&gt;
+
+&lt;p&gt;Linearizability: methods all at-a-time&lt;/p&gt;
+</description>
+        <pubDate>Mon, 17 Nov 2014 16:40:16 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/os/2014/11/17/concurrent-objects/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/2014/11/17/concurrent-objects/</guid>
+        
+        
+        <category>os</category>
+        
+      </item>
+    
+      <item>
+        <title>Papi native hardware counters</title>
+        <description>&lt;h3&gt;Check for the available native hardware counters:&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ papi_native_avail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Sample code to get the values for native hardware counters&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;papi.h&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define MAX_COUNTERS 256&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;events&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;PERF_COUNT_HW_CACHE_L1D:WRITE&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;PERF_COUNT_HW_CACHE_L1D:ACCESS&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;PERF_COUNT_HW_CACHE_L1D:READ&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;PERF_COUNT_HW_CACHE_L1D:PREFETCH&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;PERF_COUNT_HW_CACHE_L1D:MISS&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&amp;quot;HW_PRE_REQ:L1D_MISS&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;//&amp;quot;L1-DCACHE-LOADS&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define NUMCOUNTERS 6&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;compute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EventCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EventSet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_Counters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MAX_COUNTERS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;lt;!--&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Initialize the library */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_library_init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PAPI_VER_CURRENT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_VER_CURRENT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;PAPI library init error!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* PAPI create event */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PAPI_create_eventset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EventSet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_OK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;create event set: %s&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_strerror&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Add events to Event Set */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NUMCOUNTERS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_add_named_event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EventSet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;events&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_OK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;add named event: %s&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_strerror&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Start the counters */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EventSet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matice1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matice2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matice3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;//Main multiply code&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;float&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rozmer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matice1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;matice2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;matice3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Stop the counters */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_stop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EventSet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_Counters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;retval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_OK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/* Print the counters */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NUMCOUNTERS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;%20lld %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PAPI_Counters&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;events&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;compute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+</description>
+        <pubDate>Wed, 12 Nov 2014 14:11:50 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/papi/hpc/2014/11/12/papi-native-hardware-counters/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/papi/hpc/2014/11/12/papi-native-hardware-counters/</guid>
+        
+        
+        <category>papi</category>
+        
+        <category>hpc</category>
+        
+      </item>
+    
+      <item>
+        <title>Fast Paxos</title>
+        <description>&lt;ul&gt;
+&lt;li&gt;Algorithm executes multiple rounds.&lt;/li&gt;
+&lt;li&gt;An acceptor votes to accept atmost one value in a single round.&lt;/li&gt;
+&lt;li&gt;Goal: Achieve consistency by ensuring that different values are not chosen in different rounds.&lt;/li&gt;
+&lt;li&gt;Note that rounds can run concurrently, may be skipped altogether.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Accepter&lt;/h2&gt;
+
+&lt;p&gt;State maintained by accepter:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;# state maintained by acceptor
+rnd[a]
+vrand[a]
+vval[a]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;rnd[a]&lt;/code&gt; - highest numbered round in which a participated, initially 0.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vrand[a]&lt;/code&gt; - highest numbered round in which a has cast a vote, initially 0.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;vval[a]&lt;/code&gt;- The value a voted to accept in round &lt;code&gt;vrand[a]&lt;/code&gt;; it&amp;#39;s initial value is irrelevant. can be inferred using &lt;code&gt;vrand[a] == 0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;Constraint: &lt;code&gt;vrand[a] &amp;lt;= rnd[a]&lt;/code&gt; is always true. Since it cannot vote without participating in it. But it can participate and doesn&amp;#39;t vote.&lt;/p&gt;
+
+&lt;p&gt;Questions?
+- what is this value that we are talking about?&lt;/p&gt;
+
+&lt;h2&gt;Coordinator (role is often played by acceptors)&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;For each round &lt;em&gt;i&lt;/em&gt;, some coordiantor is pre-assigned to be the coordinator of round &lt;em&gt;i&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Moreover, each coordinator is assigned to be the coordinator for infinitely many rounds.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Proposers&lt;/strong&gt; send their proposals to coordinators.&lt;/li&gt;
+&lt;li&gt;The coordinator picks a value in round &lt;em&gt;i&lt;/em&gt;, that it tries to get chosen in that round.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;State maintined by coordinator:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;crnd[c]
+cval[c]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;crnd[c]&lt;/code&gt; The highest-numbered round c has begun.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cval[c]&lt;/code&gt; The value that c has picked for that round or the special value none if c has not yet picked a value for that round.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Questions?
+- How do we decide coordinator for a given round &lt;em&gt;i&lt;/em&gt;?&lt;/p&gt;
+
+&lt;h2&gt;The Basic Algorithm&lt;/h2&gt;
+
+&lt;h3&gt;Phase 1a:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Coordinator sends a message ( &lt;code&gt;crnd&lt;/code&gt;, &lt;code&gt;cval&lt;/code&gt; ) to each acceptor to &lt;code&gt;participate&lt;/code&gt; in round i.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Phase 1b:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Acceptor replies or ignores the message based on following conditions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Success:
+i &amp;gt; rnd[a]
+
+Fail:
+i &amp;lt;= rnd[a] (i.e., a has already begun round i or higher)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If success, it sends a message to coordinator containing (&lt;code&gt;vrand[a]&lt;/code&gt;, &lt;code&gt;vval[a]&lt;/code&gt;)&lt;/p&gt;
+
+&lt;h3&gt;Phase 2a:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Coordinator, on getting majority messages, sends acceptors a message to vote on &lt;strong&gt;value&lt;/strong&gt;(cval, chosen by looking at the contents of Phase 1b message) in round &lt;code&gt;i&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Phase 2b:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Acceptor accepts the message to vote on v in round i based on following conditions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Success:
+i &amp;gt;= rnd[a] and vrnd[a] != i
+
+Fail:
+i &amp;lt; rnd[a] (accepted has started higher round)
+vrand[a] == i (alreaded voted in this round and only one value can be accepted in this round)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note: acceptor ignores the message no fail. On Accept, it sends a message to all &lt;strong&gt;learners&lt;/strong&gt; announcing its round i vote.&lt;/p&gt;
+
+&lt;h3&gt;Learner&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A learner accepts a value only if it receives message (Phase 2b) from majority of acceptors.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Important Constraint&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Coordinators are assigned unique rounds, which ensures that phase 2a messages cannot be sent for with different values in same round.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/f6kKDsL.jpg?1&quot; alt=&quot;Paxos Basic&quot;&gt;&lt;/p&gt;
+
+&lt;h3&gt;Picking a value in phase 2a&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;CP: For any round i and j with j &amp;lt; i, if a value v has been chosen or might yet be chosen in round j, then no acceptor can vote for any value except v in round i.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;ul&gt;
+&lt;li&gt;paper doesn&amp;#39;t discuss leader election (coordinator)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Making Progress&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;When acceptor receives&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 11 Nov 2014 13:10:06 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/2014/11/11/fast-paxos/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/2014/11/11/fast-paxos/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Ruby Notes</title>
+        <description>&lt;h2&gt;Lambdas vs Procs&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Both are proc objects&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;Proc:0x007ff16389da58@-:1 (lambda)&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;Proc:0x007ff16389da30@-:2&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Return behaves differently&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;lambda returns from the context of lambda only.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;!-- more --&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_it&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;World!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Bye World&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;do_it&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;gt;&amp;gt; Hello World!&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;gt;&amp;gt; Bye World&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Proc returns from the calling context too.&lt;/strong&gt;
+- Note that the bye world is not printed.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_it&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;World!&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Bye World&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;do_it&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# &amp;gt;&amp;gt; Hello World!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        <pubDate>Thu, 06 Nov 2014 19:50:50 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/ruby/2014/11/06/ruby-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/ruby/2014/11/06/ruby-notes/</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>Spanner: Google&#39;s Globally Distributed Database</title>
+        <description>&lt;p&gt;&lt;strong&gt;Spanner&lt;/strong&gt;: Database that shards data across many set of Paxos state machines in data centers spread accross the world.&lt;/p&gt;
+
+&lt;h3&gt;Time API&lt;/h3&gt;
+
+&lt;p&gt;Sawtooth peak when executing, comes back when synced from server.&lt;/p&gt;
+
+&lt;p&gt;Smax: largest timestamp till relpica is up to date.&lt;/p&gt;
+
+&lt;h3&gt;Leases&lt;/h3&gt;
+
+&lt;p&gt;leaders participate in local and distributed transactions. So it&amp;#39;s better to have leaders for long time. Auto released after expiration.&lt;/p&gt;
+
+&lt;p&gt;extend the lease:
+- leader can ssign timestamp to lease in future.
+- leader can try to extend it&amp;#39;s lease to make sure it&amp;#39;s present when transaction happens.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3&gt;Snapshot isolation: all reads satisfied from the image.&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;not as strong as strict serializability.&lt;/li&gt;
+&lt;li&gt;supported using Tsafe -&amp;gt; time when you don&amp;#39;t have prepare transactions.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 06 Nov 2014 16:47:50 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</guid>
+        
+        
+        <category>os</category>
+        
+        <category>spanner</category>
+        
+        <category>distributed-database</category>
+        
+      </item>
+    
+      <item>
+        <title>map reduce</title>
+        <description>&lt;p&gt;&lt;strong&gt;map&lt;/strong&gt;: processes a key/value pair to generate a set of intermediate key/value pairs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;reduce&lt;/strong&gt;: merges all intermediate values associated with same intermediate keys.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;map    (k1, v1)       -&amp;gt; list(k2, v2)
+reduce (k2, list(v2)) -&amp;gt; list(v2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;All the mappers have to finish before reduces can end.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://i.imgur.com/At7gcgY.png?1&quot;&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mappers based on input sets&lt;/li&gt;
+&lt;li&gt;Reduces based on number of output files&lt;/li&gt;
+&lt;li&gt;Potentially less robust, you lose type information from map to reduce. Possibility of garbage values.&lt;/li&gt;
+&lt;li&gt;Mappers read from GFS but write to local file system. Since it&amp;#39;s faster to write locally.&lt;/li&gt;
+&lt;li&gt;Reducers again write to GFS.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Criticism&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Step backwards in programming paradigm.
+
+&lt;ul&gt;
+&lt;li&gt;schemas are good.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Consistency model. Garbage values can creep in.&lt;/li&gt;
+&lt;li&gt;No query language.&lt;/li&gt;
+&lt;li&gt;More on the database side of the map-reduce.&lt;/li&gt;
+&lt;li&gt;No indexes are used.&lt;/li&gt;
+&lt;li&gt;Skew is the real problem.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 06 Nov 2014 10:31:15 -0800</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/map-reduce/os/2014/11/06/map-reduce/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/map-reduce/os/2014/11/06/map-reduce/</guid>
+        
+        
+        <category>map-reduce</category>
+        
+        <category>os</category>
+        
+      </item>
+    
+      <item>
+        <title>Paxos Notes</title>
+        <description>&lt;p&gt;Source: Paxos Made Practical - David Mazieres&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Paxos&lt;/strong&gt; is a simple protocol tat a group of machines in a distributed system can use to agree on a value proposed by a member of the group.&lt;/p&gt;
+
+&lt;p&gt;If it terminates, the protocol reaches consensus even if the network was inreliable  and mutiple machines simultaneously tried to propose different values.&lt;/p&gt;
+
+&lt;p&gt;The Basic idea is that each proposal has a unique number.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;h3&gt;State Machine Replication&lt;/h3&gt;
+</description>
+        <pubDate>Wed, 29 Oct 2014 14:57:37 -0700</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</guid>
+        
+        
+        <category>paxos</category>
+        
+        <category>&quot;distributed</category>
+        
+        <category>systems&quot;</category>
+        
+      </item>
+    
+      <item>
+        <title>Make notes</title>
+        <description>&lt;p&gt;Makefile basic structure&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;target: &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;  command&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;PHONY prevents &lt;code&gt;rm&lt;/code&gt; to be executed each time, &lt;code&gt;make clean&lt;/code&gt; is called. Consider a case when there are no &lt;code&gt;.o&lt;/code&gt; files, &lt;code&gt;make clean&lt;/code&gt; will still execute &lt;code&gt;rm&lt;/code&gt; otherwise.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;.PHONY
+clean:
+  rm *.o
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Get the dependencies source for a given file.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;gcc -M test.cpp
+
+&lt;span class=&quot;c&quot;&gt;# better&lt;/span&gt;
+g++ -MM main.cpp -std&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gnu++11
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Continue making in case of errors&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;make -i
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Multithreaded make&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;make -j N
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;diction - spell checker&lt;/p&gt;
+</description>
+        <pubDate>Mon, 27 Oct 2014 10:44:03 -0700</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/make/shell/2014/10/27/make-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/make/shell/2014/10/27/make-notes/</guid>
+        
+        
+        <category>make</category>
+        
+        <category>shell</category>
+        
+      </item>
+    
+      <item>
+        <title>concurrency</title>
+        <description>&lt;ul&gt;
+&lt;li&gt;Determinism doesn&amp;#39;t effectively solves the problem.&lt;/li&gt;
+&lt;li&gt;Symbolic execution&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Transactions and Concurrency&lt;/h2&gt;
+
+&lt;h3&gt;ACID&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Atomicity:&lt;/strong&gt; All or nothing. Log to clean if system fails. Output commit -&amp;gt; you are screwed.
+&lt;strong&gt;Consistency:&lt;/strong&gt; Internal consistency of the database.
+&lt;strong&gt;Isolation:&lt;/strong&gt; Executes if it were running along.
+&lt;strong&gt;Durability:&lt;/strong&gt; Results will not be lost.&lt;/p&gt;
+
+&lt;p&gt;Memory Transactions: no guarantee, what if power goes down.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;Isolation: some serial execution this is equivalent to.
+Serializability: One approach to isolation - not dominant. Linearizability is dominant.&lt;/p&gt;
+
+&lt;p&gt;Transactions: 2-phase commit, 2-phase locking.&lt;/p&gt;
+
+&lt;p&gt;Serializability allows you to opearte on multiple objects.&lt;/p&gt;
+
+&lt;p&gt;Serializability and Sequential consistency might not correspond to real time order.
+database - serializability. memory system: read/write.&lt;/p&gt;
+
+&lt;p&gt;composable: consisten with real time and doesn&amp;#39;t touch multiple objects.&lt;/p&gt;
+
+&lt;p&gt;Single write gets broken into multiple writes inside kernel. Single write is not serializable&lt;/p&gt;
+
+&lt;p&gt;http://www.cs.rochester.edu/courses/254/fall2013/notes/12-concurrency&lt;/p&gt;
+</description>
+        <pubDate>Thu, 23 Oct 2014 10:38:21 -0700</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/os/concurrency/2014/10/23/concurrency/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/concurrency/2014/10/23/concurrency/</guid>
+        
+        
+        <category>os</category>
+        
+        <category>concurrency</category>
+        
+      </item>
+    
+      <item>
+        <title>static and dynamic linking</title>
+        <description>&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-C&quot; data-lang=&quot;C&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// add.h&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// sub.h&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Create the corressponding c files.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-C&quot; data-lang=&quot;C&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// add.c&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// sub.c&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- more --&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;// demo.c
+#include &amp;lt;stdio&amp;gt;
+#include &amp;quot;add.h&amp;quot;
+#include &amp;quot;sub.h&amp;quot;
+
+printf(&amp;quot;Sum of %d and %d is %d&amp;quot;, i, j, add(i, j));
+printf(&amp;quot;Difference of %d and %d is %d&amp;quot;, i, j, sub(i, j));
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Static Libraries&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -c add.c
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -c sub.o
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ar rs libheymath.a add.o sub.o
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -c demo.c
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -o demo.out -L . demo.o -lheymath
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;.symtab&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;    Num:    Value          Size Type    Bind   Vis      Ndx Name
+    55: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+    56: &lt;span class=&quot;m&quot;&gt;0000000000601038&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; OBJECT  GLOBAL HIDDEN    &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; __dso_handle
+    57: 000000000040058c    &lt;span class=&quot;m&quot;&gt;20&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; sum
+    58: &lt;span class=&quot;m&quot;&gt;0000000000400640&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt; OBJECT  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;15&lt;/span&gt; _IO_stdin_used
+    59: 00000000004005c0   &lt;span class=&quot;m&quot;&gt;101&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; __libc_csu_init
+    60: &lt;span class=&quot;m&quot;&gt;0000000000601048&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; _end
+    61: &lt;span class=&quot;m&quot;&gt;0000000000400440&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; _start
+    62: &lt;span class=&quot;m&quot;&gt;0000000000601040&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; __bss_start
+    63: 000000000040052d    &lt;span class=&quot;m&quot;&gt;95&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; main
+    64: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND _Jv_RegisterClasses
+    65: &lt;span class=&quot;m&quot;&gt;0000000000601040&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; OBJECT  GLOBAL HIDDEN    &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; __TMC_END__
+    66: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+    67: 00000000004005a0    &lt;span class=&quot;m&quot;&gt;22&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; sub
+    68: 00000000004003e0     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt; _init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Dynamic Libraries&lt;/h2&gt;
+
+&lt;p&gt;Dynamic libraries need to be created explicitly. They take less space since they can be shared and used functions are not put in executable.&lt;/p&gt;
+
+&lt;p&gt;Note that dynamic libraries introduce dependencies and the executable cannot be run directly on another system.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -Wall -fPIC -c add.c
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -Wall -fPIC -c sub.c
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -shared -o libheymath.so add.o sub.o
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sudo cp libheymath.so /usr/lib/
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ldconfig /usr/lib/libheymath.so
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gcc -o demo.out demo.o -lheymath
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Dependencies can be checked using &lt;code&gt;ldd&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ ldd demo.out
+
+    linux-vdso.so.1 =&amp;gt;  (0x00007fffe5bfe000)
+    libheymath.so =&amp;gt; /usr/lib/libheymath.so (0x00007fdc19d77000)
+    libc.so.6 =&amp;gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fdc199b1000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007fdc19f95000)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;.symtab&lt;/h2&gt;
+
+&lt;p&gt;Notice that the sub and add are have undefined index and will be resolved at runtime.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;    Num:    Value          Size Type    Bind   Vis      Ndx Name
+    53: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+    54: &lt;span class=&quot;m&quot;&gt;0000000000601048&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; OBJECT  GLOBAL HIDDEN    &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; __dso_handle
+    55: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT  UND sum
+    56: &lt;span class=&quot;m&quot;&gt;0000000000400800&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt; OBJECT  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;15&lt;/span&gt; _IO_stdin_used
+    57: &lt;span class=&quot;m&quot;&gt;0000000000400780&lt;/span&gt;   &lt;span class=&quot;m&quot;&gt;101&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; __libc_csu_init
+    58: &lt;span class=&quot;m&quot;&gt;0000000000601058&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; _end
+    59: &lt;span class=&quot;m&quot;&gt;0000000000400630&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; _start
+    60: &lt;span class=&quot;m&quot;&gt;0000000000601050&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; __bss_start
+    61: 000000000040071d    &lt;span class=&quot;m&quot;&gt;95&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt; main
+    62: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND _Jv_RegisterClasses
+    63: &lt;span class=&quot;m&quot;&gt;0000000000601050&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; OBJECT  GLOBAL HIDDEN    &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; __TMC_END__
+    64: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+    65: &lt;span class=&quot;m&quot;&gt;0000000000000000&lt;/span&gt;     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT  UND sub
+    66: 00000000004005b0     &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; FUNC    GLOBAL DEFAULT   &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt; _init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;References:&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;http://cs-fundamentals.com/c-programming/static-and-dynamic-linking-in-c.php&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Fri, 17 Oct 2014 17:25:26 -0700</pubDate>
+        <link>https://goyalankit.github.io/jekyll-lambda/linking/compilers/2014/10/17/static-and-dynamic-linking/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/linking/compilers/2014/10/17/static-and-dynamic-linking/</guid>
+        
+        
+        <category>linking</category>
+        
+        <category>compilers</category>
+        
+      </item>
+    
+  </channel>
+</rss>

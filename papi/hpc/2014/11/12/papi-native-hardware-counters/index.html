@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Papi native hardware counters</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Check for the available native hardware counters:
+$ papi_native_avail
+
+Sample code to get the values for native hardware counters
+#include &lt;stdio.h&gt;
+#include &lt;papi.h&gt;
+
+#define MAX_COUNTERS 256
+int rozmer = 1;
+
+static char * events[] = {
+    &quot;PERF_COUNT_HW_CACHE_L1D:WRITE&quot;,
+    &quot;PERF_COUNT_HW_CACHE_L1D:ACCESS&quot;,
+    &quot;PERF_COUNT_HW_CACHE_L1D:READ&quot;,
+    &quot;PERF_COUNT_HW_CACHE_L1D:PREFETCH&quot;,
+    &quot;PERF_COUNT_HW_CACHE_L1D:MISS&quot;,
+    &quot;HW_PRE_REQ:L1D_MISS&quot;,
+    //&quot;L1-DCACHE-LOADS&quot;
+};
+
+#define NUMCOUNTERS 6
+void compute() {
+    int EventCode, retval;
+    int EventSet = PAPI_NULL;
+    long long PAPI_Counters[MAX_COUNTERS];
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/papi/hpc/2014/11/12/papi-native-hardware-counters/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/papi/hpc/2014/11/12/papi-native-hardware-counters/">Papi native hardware counters</a></h1>
+	    <p class="entry-meta">
+		    Nov 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h3>Check for the available native hardware counters:</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ papi_native_avail
+</code></pre></div>
+<h3>Sample code to get the values for native hardware counters</h3>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="cp">#include &lt;papi.h&gt;</span>
+
+<span class="cp">#define MAX_COUNTERS 256</span>
+<span class="kt">int</span> <span class="n">rozmer</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">events</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:WRITE&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:ACCESS&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:READ&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:PREFETCH&quot;</span><span class="p">,</span>
+    <span class="s">&quot;PERF_COUNT_HW_CACHE_L1D:MISS&quot;</span><span class="p">,</span>
+    <span class="s">&quot;HW_PRE_REQ:L1D_MISS&quot;</span><span class="p">,</span>
+    <span class="c1">//&quot;L1-DCACHE-LOADS&quot;</span>
+<span class="p">};</span>
+
+<span class="cp">#define NUMCOUNTERS 6</span>
+<span class="kt">void</span> <span class="nf">compute</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">EventCode</span><span class="p">,</span> <span class="n">retval</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">EventSet</span> <span class="o">=</span> <span class="n">PAPI_NULL</span><span class="p">;</span>
+    <span class="kt">long</span> <span class="kt">long</span> <span class="n">PAPI_Counters</span><span class="p">[</span><span class="n">MAX_COUNTERS</span><span class="p">];</span>
+
+<span class="o">&lt;!--</span> <span class="n">more</span> <span class="o">--&gt;</span>
+
+    <span class="cm">/* Initialize the library */</span>
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">PAPI_library_init</span><span class="p">(</span><span class="n">PAPI_VER_CURRENT</span><span class="p">);</span>
+
+    <span class="k">if</span>  <span class="p">(</span><span class="n">retval</span> <span class="o">!=</span> <span class="n">PAPI_VER_CURRENT</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;PAPI library init error!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* PAPI create event */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">PAPI_create_eventset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">EventSet</span><span class="p">)</span> <span class="o">!=</span> <span class="n">PAPI_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;create event set: %s&quot;</span><span class="p">,</span> <span class="n">PAPI_strerror</span><span class="p">(</span><span class="n">retval</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Add events to Event Set */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUMCOUNTERS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">retval</span> <span class="o">=</span> <span class="n">PAPI_add_named_event</span><span class="p">(</span><span class="n">EventSet</span><span class="p">,</span> <span class="n">events</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">!=</span> <span class="n">PAPI_OK</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;add named event: %s&quot;</span><span class="p">,</span> <span class="n">PAPI_strerror</span><span class="p">(</span><span class="n">retval</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Start the counters */</span>
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">PAPI_start</span><span class="p">(</span><span class="n">EventSet</span><span class="p">);</span>
+
+    <span class="kt">float</span> <span class="n">matice1</span><span class="p">[</span><span class="n">rozmer</span><span class="p">][</span><span class="n">rozmer</span><span class="p">];</span>
+    <span class="kt">float</span> <span class="n">matice2</span><span class="p">[</span><span class="n">rozmer</span><span class="p">][</span><span class="n">rozmer</span><span class="p">];</span>
+    <span class="kt">float</span> <span class="n">matice3</span><span class="p">[</span><span class="n">rozmer</span><span class="p">][</span><span class="n">rozmer</span><span class="p">];</span>
+
+    <span class="c1">//Main multiply code</span>
+    <span class="kt">int</span> <span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">rozmer</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">rozmer</span><span class="p">;</span> <span class="n">k</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">float</span> <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="n">rozmer</span><span class="p">;</span> <span class="n">m</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span> <span class="o">+</span> <span class="n">matice1</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">matice2</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">k</span><span class="p">];</span>
+            <span class="p">}</span>
+            <span class="n">matice3</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Stop the counters */</span>
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">PAPI_stop</span><span class="p">(</span><span class="n">EventSet</span><span class="p">,</span> <span class="n">PAPI_Counters</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">retval</span> <span class="o">!=</span> <span class="n">PAPI_OK</span><span class="p">)</span> <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="cm">/* Print the counters */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">NUMCOUNTERS</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%20lld %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">PAPI_Counters</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">events</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(){</span>
+  <span class="n">compute</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<!-- more -->
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

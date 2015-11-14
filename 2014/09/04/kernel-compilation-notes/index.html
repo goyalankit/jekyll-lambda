@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>kernel compilation notes</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="Kernel Versions
+# Guest
+goyal@fyra:~$ uname -a
+Linux fyra 3.13.0-34-generic #60-Ubuntu SMP Wed Aug 13 15:45:27 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+
+# Host
+ankit@ubuntu2:~$ uname -a
+Linux ubuntu2 3.16.1 #1 SMP Thu Sep 4 18:57:37 CDT 2014 x86_64 GNU/Linux
+
+Create VM
+
+
+Install KVM and it&#39;s dependencies.
+Create a Ubuntu VM using VMBuilder
+
+sudo vmbuilder kvm ubuntu     \
+    --arch i386               \
+    --user ankit              \
+    --name ankit              \
+    --pass cracker            \
+    --suite lucid             \
+    --flavour virtual         \
+    --addpkg openssh-server   \
+    --libvirt qemu:///system
+">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/09/04/kernel-compilation-notes/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/04/kernel-compilation-notes/">kernel compilation notes</a></h1>
+	    <p class="entry-meta">
+		    Sep 4, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>Kernel Versions</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text"># Guest
+goyal@fyra:~$ uname -a
+Linux fyra 3.13.0-34-generic #60-Ubuntu SMP Wed Aug 13 15:45:27 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+
+# Host
+ankit@ubuntu2:~$ uname -a
+Linux ubuntu2 3.16.1 #1 SMP Thu Sep 4 18:57:37 CDT 2014 x86_64 GNU/Linux
+</code></pre></div>
+<h2>Create VM</h2>
+
+<ul>
+<li>Install KVM and it&#39;s dependencies.</li>
+<li>Create a Ubuntu VM using VMBuilder</li>
+</ul>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">sudo vmbuilder kvm ubuntu     <span class="se">\</span>
+    --arch i386               <span class="se">\</span>
+    --user ankit              <span class="se">\</span>
+    --name ankit              <span class="se">\</span>
+    --pass cracker            <span class="se">\</span>
+    --suite lucid             <span class="se">\</span>
+    --flavour virtual         <span class="se">\</span>
+    --addpkg openssh-server   <span class="se">\</span>
+    --libvirt qemu:///system
+</code></pre></div>
+<!-- more -->
+
+<h3>.qcow image</h3>
+
+<p>qcow is a file format for disk image files used by QEMU, a hosted virtual machine monitor.
+the old QEMU copy-on-write format, supported for historical reasons and superseded by qcow2</p>
+
+<h3>.qcow2 image</h3>
+
+<p>QEMU copy-on-write format with a range of special features, including the ability to take multiple snapshots, smaller images on filesystems that don&#39;t support sparse files, optional AES encryption, and optional zlib compression</p>
+
+<ul>
+<li><strong>Basic Commands</strong></li>
+</ul>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">  arp -n <span class="c"># to find out what ip address was assined to the VM.</span>
+
+  virsh --connect qemu:///system list --all <span class="c"># to list all the vms</span>
+
+  virsh --connect qemu:///system start ubuntu <span class="c"># to start the vm with name ubuntu</span>
+</code></pre></div>
+<ul>
+<li>For clean shutdown install <strong>acpid</strong> inside the guest OS. <code>sudo apt-get install acpid</code>.</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">virsh --connect qemu:///system shutdown ubuntu # to shutdown the vm
+</code></pre></div>
+<p><code>virsh</code> is a tool that provides interface to libvrt deamon.</p>
+
+<p><code>qemu-</code></p>
+
+<h4>Run the Virtual Machine using KVM</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">kvm -drive file=tmpYPpuMh.qcow2 --snapshot
+</code></pre></div>
+<h3>Run the VM using qemu-system</h3>
+
+<p>This configuration allows guest to access outside world but not vice-versa. It forwards 22 port so that host can connect to VM over ssh.
+<code>
+qemu-system-x86_64 -drive file=tmpPKS3JS.qcow2 --snapshot -net nic,model=virtio -net user -redir tcp:2222::22
+</code></p>
+
+<p>To connect to guest
+<code>
+ssh -p 2222 ankit@localhost
+</code></p>
+
+<h3>Mount image on local filesystem</h3>
+
+<h4>Network Block Device (nbd)</h4>
+
+<p>From Wikipedia:</p>
+
+<p>In Linux, a network block device is a device node whose content is provided by a remote machine. Typically, network block devices are used to access a storage device that does not physically reside in the local machine but on a remote one. As an example, the local machine can access a fixed disk that is attached to another computer.</p>
+
+<ul>
+<li>Load the <strong>nbd</strong> module in current kernel</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">sudo modprobe nbd max_part=8
+</code></pre></div>
+<ul>
+<li><p>create a device entry for the disk
+<code>
+sudo qemu-nbd --connect=/dev/nbd0 file.qcow2
+</code></p></li>
+<li><p>Mount the device on mount point
+<code>
+sudo mount /dev/nbd0p1 /mnt/kvm
+cd /mnt/kvm # should show you the filesystem of VM
+</code></p></li>
+<li><p>Unmount
+<code>
+sudo umount /mnt/kvm
+sudo nbd-client -d /dev/nbd0
+</code></p></li>
+</ul>
+
+<hr>
+
+<h3>Compile the kernel</h3>
+
+<ul>
+<li>Download and extract source from http://kernel.org</li>
+<li>Create a separate kbuild directory.</li>
+<li>Prepare kernel for compilation by cleaning the source directory
+<code>
+make mrproper
+</code></li>
+<li>Create configuration file in kbuild directory
+<code>
+yes &quot;&quot; | make -C &lt;kernel dir&gt; O=$(pwd) config
+</code></li>
+<li>Set <code>CONFIG_SATA_AHCI=y</code> in .config file so that SATA disk driver is built into kernel and not as a module. This will allow kernel to boot off a virtual SATA drive without having to load a module.</li>
+<li>Build the kernel by running make in kbuild</li>
+</ul>
+
+<hr>
+
+<h4>Boot the kernel</h4>
+
+<ul>
+<li>Tell kernel that root of the filesystem is <code>/dev/sda1</code></li>
+<li>Set the console to <code>ttyS0</code> so that we can see the logs.</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">sudo qemu-system-x86_64 -drive file=tmpPKS3JS.qcow2 --snapshot -net nic,model=virtio -net user -redir tcp:2222::22 -nographic -kernel ~/workspace/kernel/kbuild/arch/x86_64/boot/bzImage -boot c -append &quot;root=/dev/sda1 console=ttyS0,115200n8 console=ttyS0&quot;
+</code></pre></div>
+<p>Use SSH to login to the machine
+<code>
+ssh -p 2222 ankit@localhost
+</code></p>
+
+<ul>
+<li>Create a new file /etc/init/ttyS0.conf
+```
+# ttyS0 - getty
+#
+# This service maintains a getty on ttyS0 from the point the system is
+# started until it is shut down again.
+start on stopped rc or RUNLEVEL=[2345]
+stop on runlevel [!2345]
+respawn
+exec /sbin/getty -L 115200 ttyS0 vt102</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">### Debuggin Kernel
+
+There are several ways to start gdbserver so that gdb can attach remotely.
+
+You can either start the VM using `-s` flag and then you can attach gdb remotely. Note: `-s` is equivalent to `-gdb tcp::1234`
+</code></pre></div>
+<p>sudo qemu-system-x86<em>64 -drive file=tmpPKS3JS.qcow2 --snapshot -net nic,model=virtio -net user -redir tcp:2222::22 -nographic -kernel ~/workspace/kernel/kbuild/arch/x86</em>64/boot/bzImage -boot c -append &quot;root=/dev/sda1 console=ttyS0,115200n8 console=ttyS0&quot; -s
+```</p>
+
+<p>To attach gdb remotely:
+<code>
+bash&gt; gdb workspace/kernel/kbuild/vmlinux
+gdb&gt; target remote:1234
+</code>
+More Info: http://people.eecs.ku.edu/~kpoduval/UMOD/kvm_gdb.html</p>
+
+<p>OR</p>
+
+<h4>Qemu monitor</h4>
+
+<p>Another way to start gdbserver is by using qemu-monitor console. User <code>ctrl + alt + shift + 2</code> to go to qemu console and run
+<code>
+(qemu) gdbserver
+</code></p>
+
+<h5>Other useful qemu monitor commands</h5>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="o">(</span>qemu<span class="o">)</span> commit all <span class="c"># Commit your changes to image when running using -snapshot option</span>
+
+<span class="o">(</span>qemu<span class="o">)</span> system_powerdown <span class="c"># to shutdown vm cleanly</span>
+</code></pre></div>
+<p>More on qemu monitor: http://en.wikibooks.org/wiki/QEMU/Monitor</p>
+
+<p>Information on registers, commands:</p>
+
+<p>http://www.cs.nyu.edu/~mwalfish/classes/ut/s12-cs372h/labs/labguide.html#make</p>
+
+<h4>Debugging process</h4>
+
+<p>Program used for debugging:</p>
+<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include&lt;unistd.h&gt;</span>
+<span class="cp">#include&lt;fcntl.h&gt;</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/urandom&quot;</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">);</span>
+  <span class="kt">char</span> <span class="n">data</span><span class="p">[</span><span class="mi">4096</span><span class="p">];</span>
+  <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data</span><span class="p">,</span> <span class="mi">4096</span><span class="p">);</span>
+  <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+  <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&quot;/dev/null&quot;</span><span class="p">,</span> <span class="n">O_WRONLY</span><span class="p">);</span>
+  <span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data</span><span class="p">,</span> <span class="mi">4096</span><span class="p">);</span>
+  <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>swapper is an idle process with id = 0. It runs when no other process is runnnin.</li>
+</ul>
+
+<h3>Errors</h3>
+
+<p>Ignore these errors. These errors occurs irrespective of how you launch the kernel.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">init: plymouth main process (80) killed by SEGV signal
+init: plymouth-splash main process (312) terminated with status 2
+mountall: Plymouth command failed
+mountall: Plymouth command failed
+mountall: Plymouth command failed
+mountall: Plymouth command failed
+mountall: Disconnected from Plymouth
+init: plymouth-log main process (323) terminated with status 1
+</code></pre></div>
+<p>useful links:
+http://www.linuxchix.org/content/courses/kernel_hacking/lesson8</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

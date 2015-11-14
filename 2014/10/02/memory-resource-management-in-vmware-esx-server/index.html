@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Memory Resource Management in VMWare ESX Server</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/10/02/memory-resource-management-in-vmware-esx-server/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/10/02/memory-resource-management-in-vmware-esx-server/">Memory Resource Management in VMWare ESX Server</a></h1>
+	    <p class="entry-meta">
+		    Oct 2, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Source: https://www.usenix.org/legacy/event/osdi02/tech/waldspurger/waldspurger.pdf<br/>
+Published: 2002</p>
+
+<p>VMWare ESX Server is a thin layer designed to multiplex hardware resources efficiently among virtual machines running unmodified commodity operating systems.</p>
+
+<h3>Memory Virtualization</h3>
+
+<p>All guest operating systems expect a zero-phased physical address space as provided by real hardwares. ESX Server gives this illusion by adding an extra level of translation. In this mechanism, Virtual addresses are mapped to &quot;Physical Address&quot; (provided by ESX Server) which are further mapped to Machine addresses (actual memory on chip). Seperate shadow pages tables, which contains virtual to machine page mappings for use by the processor.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text"> -----------------      PMAP in ESX    ------------------     Page Table in OS   -----------------
+| Machine Address |   &lt;-------------  | Physical Address |  &lt;-----------------  | Virtual Address |
+ -----------------                     ------------------                        -----------------
+</code></pre></div>
+<h4>Reclamation Mechanisms</h4>
+
+<p>ESX Server usually overcommits memory and needs a reclamation mechanism to reclaim memory from one or more virtual machines.</p>
+
+<h4>Balooning</h4>
+
+<p>A small balloon module is loaded into the guest OS as a pseudo-device driver or kernel service. It doesn&#39;t have any external interface. When ESX server wants to reclaim memory, it instructs the driver to &#39;inflate&#39; by allocating pinned physical pages within the VM. This creates a memory pressure inside the VM and guest OS starts reclaiming memory to satisfy drivers request. The balloon driver communicates the physical page number to ESX server, which may then recalim the corressponding machine page.</p>
+
+<ul>
+<li>Technically guest os shouldn&#39;t touch pages allocated to balloon driver, however ESX server doesn&#39;t rely on guest os correctness. It annotates its pmap entry and deallocates its associated MPN (machine page number). any subsequent attempt to access that memory will generate a page fault that is handled by the server.</li>
+</ul>
+
+<h4>Demand Paging</h4>
+
+<p>ESX server preferentially uses ballooning to reclaim memory, treating as a common-case optimization if ballooning is not possible or insufficient, memory is reclaimed by paging out to an ESX Server swap area on disk, without any guest involvement.</p>
+
+<p>A randomized page replacement policy is used so that higher level page semantics are not effected.</p>
+
+<h4>Sharing Memory - Content-Based page sharing</h4>
+
+<p>ESX server maintains a hashmap of pages where key is hash summarizing the content in page. If the hash value for new page matches an existing page, then the whole contents of the page are compared and if they match a reference count is incremented and the page is shared. Any attempt to write to a shared page will generate a fault, transparently creating a new page. (COW - copy on write)</p>
+
+<p>If no match is found the page is hashed but it is not marked as COW. Instead it is tagged as a special hint entry. On any future match, contents of the hint page are rehashed and checked to see if the page has been modified. If the hash is still valid, a full comparison is performed and page is shared (marked as COW now).</p>
+
+<h4>Share based allocation</h4>
+
+<p>Resource rights are encapsulated by shares, which are owned by clients that consume resources. Traditionally VMs that have more shares are allocated more resources nad in case of reclamation, the VMs with lower shares are used to reclaim memory. It may happen that VMs with larger share are not using the memory and smaller VMs are the one that can actually benifit from the memory. So we don&#39;t have good resource utilization here.</p>
+
+<p>ESX server introduces the concept of idle memory tax which charges more for the idle pages than the pages that are activally used.</p>
+
+<h4>Measuring Idle memory</h4>
+
+<p>ESX server uses a statistical sampling approach to obtain aggregate VM working set estimates directly, without any guest involvement. At the start of sampling period, a small number of the vm&#39;s &quot;physical&quot; pages are selected and their corresponding TLB enteries and MMUU state is invalidated. When VM access those pages, it leads to a fault and a use of the page is registered. At the end of period fraction f of memory actively accessed by the vm can be calculated by simply f = t/n (t page faults out of n invalidations)</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

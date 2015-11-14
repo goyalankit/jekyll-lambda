@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>cache basics</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/09/12/cache-basics/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/12/cache-basics/">cache basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 12, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>Performance of CPU increase very fast, however memory is not involving as fast (not the latency nor bandwidth of the bus).</p>
+
+<p>So we put in cache closer to the processor. Caches are small.
+* Caches are faster because they are smaller.
+* Speed of light limits the speed for larger memories.</p>
+
+<h3>Locality</h3>
+
+<p>Programs tend to use data and insturctions with addresses near or equal to those recently used.</p>
+
+<h4>Temporal Locality</h4>
+
+<ul>
+<li>Recently referenced items are likely to be referenced again in the near future.</li>
+<li>Replacement policy of cache.</li>
+</ul>
+
+<h4>Spatial Locality</h4>
+
+<ul>
+<li>Items with nearby addresses tend to be referenced close together in time.</li>
+<li>Bring blocks of memory to the cache</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">sum = 0
+for (i = 0; i &lt; n; i++) {
+  sum += a[i];
+}
+return sum;
+</code></pre></div>
+<p>In the above program:</p>
+
+<p>Date:</p>
+
+<ul>
+<li><strong>Spatial Locality</strong>: array accessed with stride-1 pattern</li>
+<li><strong>Temporal Locality</strong>: sum referenced in each iteration</li>
+</ul>
+
+<p>Instructions:</p>
+
+<ul>
+<li><strong>Temporal</strong>: cycle through loop iteratively.</li>
+<li><strong>Spatial</strong>: reference instructions in sequence.</li>
+</ul>
+
+<h4>Cache structure of core i7</h4>
+
+<p><img src="/images/post-images/core-i7.png"/></p>
+
+<h3>Cache Line or Block Size</h3>
+
+<p>In a direct mapped cache, cache line is the number of bytes that you can store at a given index (can be extended to set associative)</p>
+
+<p><img src="/images/post-images/cache-line.png"/></p>
+
+<h3>Cache conflicts</h3>
+
+<h4>Reads</h4>
+
+<ol>
+<li><strong>Cold(compulsory misses)</strong>: Occurs on first block of data.</li>
+<li><strong>Conflict Miss</strong>: Occurs when cache is large enough but multiple data objects all map to the same slot. e.g. referring block 0, 8, 0, 8.</li>
+<li><strong>Capacity Miss</strong>: Occurs when the set of active cache blocks is larger than the cache.</li>
+</ol>
+
+<h4>Writes</h4>
+
+<ol>
+<li>Data may be stored at multiple levels of memory. (copies are spread across levels)</li>
+<li>On <strong>write-hit</strong> (write block is in cache)
+
+<ul>
+<li><strong>Write-through</strong>: Write immediately to memory</li>
+<li><strong>Write-back</strong> (defer write to memory until the line is evicted): Set a dirty bit to indicate if line is different from memory or not.</li>
+</ul></li>
+<li>On <strong>write-miss</strong>:
+
+<ul>
+<li><strong>write-allocate</strong>: load into cache, update line in cache. Good if more write to location follows.</li>
+<li><strong>no-write-allocate</strong>: just write immediately to memory.</li>
+</ul></li>
+<li>Typical Caches:
+
+<ul>
+<li>write-back + write-allocate</li>
+<li>wite-through + no-write-allocate, occasionally in case of multiple processors.</li>
+</ul></li>
+</ol>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

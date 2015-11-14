@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>scheduling basics</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/2014/09/20/scheduling-basics/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/2014/09/20/scheduling-basics/">scheduling basics</a></h1>
+	    <p class="entry-meta">
+		    Sep 20, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<h2>Scheduling policy in Linux Kernel</h2>
+
+<p>source: <a href="http://idak.gop.edu.tr/esmeray/UnderStandingKernel.pdf">Understanding the Linux Kernel</a>, Chapter 7</p>
+
+<p>CPU time is divided into slices, one for each runnable process. Time sharing relies on timer interrupts and is thus transparent to processes.</p>
+
+<p>For scheduling processes are traditionally classified as: I/O-bound or CPU-bound.</p>
+
+<p>Another classification distinguishes three kind of processes:</p>
+
+<ol>
+<li><p><strong>Interactive Processes</strong>: Constantly interact with users, these programs spend lot of time waiting for keypress and should be woekn up quickly when input is received. e.g., shell, text editors, etc.</p></li>
+<li><p><strong>Batch Processes:</strong> Not much user interaction and often run in background. Often penalized by the scheduler. e.g., compilers, database search engines and scientific computations.</p></li>
+<li><p><strong>Real-time process:</strong> Stringent scheduling requirements, should never be blocked due to low priority processes. e.g., video and sound applications, controllers collecting data from sensors.</p></li>
+</ol>
+
+<h2>Process Preemption:</h2>
+
+<p>Linux processes are preemptable (both in Kernel or User mode). When a process enters TASK_RUNNING state, the kernel checks if its dynamic priority is greater than the priority of the currently running process. If it is, execution of <code>current</code> is interrupted and scheduler is invoked to select another process.</p>
+
+<p>e.g., 2 programs - text editor and compiler. Compiler is running, user presses a key, an interrupt is raised and the kernel wakes up the editor process. Kernel also checks that the dynamic priority of text editor program is higher than compiler, so it sets <code>TIF_NEED_RESCHED</code> for the current process (thus forcing the scheduler when interrupt handler reutrns.). As the interrupt handler returns, scheduler is invoked and the context switch happens. Note: preempted process is not suspended, it remains in TASK_RUNNING state.</p>
+
+<h2>Quantum size</h2>
+
+<p>If quantum is too short, context switches get expensive. If it&#39;s too long, it may make system unresponsive. e.g., two users launch process together, one of them is interactive and other is batch. If scheduler schedules batch first initially, other process becomes unresponsive.</p>
+
+<p><em>Note that too long a quantum doesn&#39;t degrades the response time of interative processes in general due to process preemption.</em></p>
+
+<p>The choice of quantum is usually a compromise and Linux chooses a duration as long as possible, while keep a good response time.</p>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>

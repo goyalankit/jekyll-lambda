@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>log structured file system</title>
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+
+    
+    
+
+    <link rel="canonical" href="https://goyalankit.github.io/jekyll-lambda/linux/filesystem/2014/09/25/log-structured-file-system/">
+    <link rel="icon" type="image/png" href="/images/lambda-xl.png">
+
+    <!-- Custom CSS -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/jekyll-lambda/css/syntax.css">
+    <link rel="stylesheet" href="/jekyll-lambda/css/lambda.css">
+
+    
+
+</head>
+
+
+    <body>
+    
+    <div class="wrapper">
+
+      <header id="main-header">
+  <div id="site-title">
+    <a href="/">notez</a>
+  </div>
+  <div class="links">
+  
+  <a href="/" class="page-link">Blog</a>
+  
+    
+  
+    
+      <a class="page-link"
+        href="/jekyll-lambda/about/">About</a>
+    
+  
+    
+  
+    
+  
+    
+  
+  <a href="/feed.xml" target="_blank" class="page-link">RSS</a>
+  
+  <a href="http://github.com/goyalankit/os"
+    target="_blank"
+    class="page-link github-link">
+    <img src="/images/github-repo.png" alt="Github Repository">
+    Source</a>
+  
+  </div>
+</header>
+
+      
+      <div id="content">
+        <div id="articles">
+          <div class="article-list">
+            <div class="entry">
+
+	<div class="entry-content">
+
+	  <header>
+	    <h1 class="entry-title"><a href="/linux/filesystem/2014/09/25/log-structured-file-system/">log structured file system</a></h1>
+	    <p class="entry-meta">
+		    Sep 25, 2014
+		    
+	    </p>
+	  </header>
+
+	  <article class="entry-body">
+	  	
+	  		<p>In LFS, log is the only structure on disk. The log is divided into segments (to maintain space for large files) where data is written sequentially. <strong>segment cleaner</strong> compresses the information from heavily fragmented code.</p>
+
+<ul>
+<li>Log also stores indexing information so that the files can be read back with efficiency comparable to current file systems.</li>
+</ul>
+
+<p>LFS is based on assumption that files are cached in main memory, so the majority of traffic write traffic which is efficient since we are writing sequentially and eliminating seeks in the disk.</p>
+
+<ul>
+<li>Sprite LFS uses 60-75% of the disk bandwith where as unix file system uses about 5-10% since most of the time is spent in seeking.</li>
+</ul>
+
+<hr>
+
+<p>The main challenge of LFS is to ensure that there are always large extents of free space available for writing new data. Large extents called <em>segments</em> are used, where segment cleaner continually regenerates empty segments by compressing the live data from heavily fragmented segements.</p>
+
+<blockquote>
+<p>File system is governed by two basic building blocks: technology and workload.</p>
+</blockquote>
+
+<p>Three components that are significant for file system design:</p>
+
+<ol>
+<li><strong>Processors</strong>- getting faster and fater, putting more pressure on memory</li>
+<li><strong>Main Memory</strong> - Can cache files and change the predominant type of data, like more writes than reads, so you can optimize you FS for writes</li>
+<li><strong>Disks</strong> - well that&#39;s where you store your data, they have two components:
+
+<ul>
+<li>Transfer Bandwith -  can be improved using disk arrays and parallel-head disks.</li>
+<li>Access Time - depends on mechanical head (at the time of publishing).</li>
+</ul></li>
+</ol>
+
+<hr>
+
+<ul>
+<li>Unix file system writes metadata structures such as directories and inodes synchronously, which is not good for lot of small files.</li>
+<li>LFS buffers a sequence of file system changes in the file cache and writes them sequentailly in a single disk operation.</li>
+</ul>
+
+<h2>Key Issues</h2>
+
+<ol>
+<li>Information Retrieval  - uses inodes and maintains a inode map which contains the location of inodes.</li>
+<li>Large free space</li>
+</ol>
+
+  		
+	  </article>
+
+  </div>
+
+</div>
+
+
+	<div class="article-author">
+    <div class="avatar">
+    <img width="50" height="50" src="http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=50" alt=" Avatar"/>
+    </div>
+    <div class="name">
+        <h4>Assembled by <b>Ankit Goyal</b> </h4>
+        Single line description about the author
+    </div>
+</div>
+
+	
+	    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = '';
+	(function() {
+	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	    dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+	    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+	
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </body>
+</html>
