@@ -5,7 +5,7 @@ author_avatar: http://0.gravatar.com/avatar/d66cc3dd2d00bed9ae96105661e618fa?s=5
 email: me@goyalankit.com
 description: Blog about whatever.
 baseurl: "" # optional
-url: "https://foo_bar.github.io"
+url: "https://goyalankit.github.io/jekyll-lambda"
 twitter_username: _goyalankit
 github_username: goyalankit
 github_repo: goyalankit/os
