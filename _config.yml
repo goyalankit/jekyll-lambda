@@ -1,6 +1,6 @@
 # Site settings
-title: Site Title
-author: Your Name
+title: notez
+author: Ankit Goyal
 author_avatar: https://gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=50
 email: alias@domain.tld
 description: Blog about whatever.
@@ -13,7 +13,7 @@ github_repo: foo_bar/foo_bar.github.io
 # disqus: disqus-id
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet #kramdown
 permalink: pretty
 excerpt_separator: "<!-- more -->"
 
