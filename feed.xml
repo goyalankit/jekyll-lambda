@@ -3,10 +3,10 @@
   <channel>
     <title>notez</title>
     <description>Blog about whatever.</description>
-    <link>https://goyalankit.github.io/jekyll-lambda/</link>
-    <atom:link href="https://goyalankit.github.io/jekyll-lambda/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 14 Nov 2015 01:21:48 -0800</pubDate>
-    <lastBuildDate>Sat, 14 Nov 2015 01:21:48 -0800</lastBuildDate>
+    <link>https://goyalankit.github.io/notez/</link>
+    <atom:link href="https://goyalankit.github.io/notez/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 14 Nov 2015 01:25:36 -0800</pubDate>
+    <lastBuildDate>Sat, 14 Nov 2015 01:25:36 -0800</lastBuildDate>
     <generator>Jekyll v2.2.0</generator>
     
       <item>
@@ -92,8 +92,8 @@ Thread B ------------------------------|   r.deq(-3)    |-----------------------
 &lt;p&gt;Linearizability: methods all at-a-time&lt;/p&gt;
 </description>
         <pubDate>Mon, 17 Nov 2014 16:40:16 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/os/2014/11/17/concurrent-objects/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/2014/11/17/concurrent-objects/</guid>
+        <link>https://goyalankit.github.io/notez/os/2014/11/17/concurrent-objects/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/os/2014/11/17/concurrent-objects/</guid>
         
         
         <category>os</category>
@@ -190,8 +190,8 @@ Thread B ------------------------------|   r.deq(-3)    |-----------------------
 &lt;!-- more --&gt;
 </description>
         <pubDate>Wed, 12 Nov 2014 14:11:50 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/papi/hpc/2014/11/12/papi-native-hardware-counters/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/papi/hpc/2014/11/12/papi-native-hardware-counters/</guid>
+        <link>https://goyalankit.github.io/notez/papi/hpc/2014/11/12/papi-native-hardware-counters/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/papi/hpc/2014/11/12/papi-native-hardware-counters/</guid>
         
         
         <category>papi</category>
@@ -325,8 +325,8 @@ vrand[a] == i (alreaded voted in this round and only one value can be accepted i
 &lt;/ul&gt;
 </description>
         <pubDate>Tue, 11 Nov 2014 13:10:06 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/2014/11/11/fast-paxos/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/2014/11/11/fast-paxos/</guid>
+        <link>https://goyalankit.github.io/notez/2014/11/11/fast-paxos/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/2014/11/11/fast-paxos/</guid>
         
         
       </item>
@@ -379,8 +379,8 @@ vrand[a] == i (alreaded voted in this round and only one value can be accepted i
 &lt;span class=&quot;c1&quot;&gt;# &amp;gt;&amp;gt; Hello World!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
         <pubDate>Thu, 06 Nov 2014 19:50:50 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/ruby/2014/11/06/ruby-notes/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/ruby/2014/11/06/ruby-notes/</guid>
+        <link>https://goyalankit.github.io/notez/ruby/2014/11/06/ruby-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/ruby/2014/11/06/ruby-notes/</guid>
         
         
         <category>ruby</category>
@@ -415,8 +415,8 @@ vrand[a] == i (alreaded voted in this round and only one value can be accepted i
 &lt;/ul&gt;
 </description>
         <pubDate>Thu, 06 Nov 2014 16:47:50 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</guid>
+        <link>https://goyalankit.github.io/notez/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</guid>
         
         
         <category>os</category>
@@ -465,8 +465,8 @@ reduce (k2, list(v2)) -&amp;gt; list(v2)
 &lt;/ul&gt;
 </description>
         <pubDate>Thu, 06 Nov 2014 10:31:15 -0800</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/map-reduce/os/2014/11/06/map-reduce/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/map-reduce/os/2014/11/06/map-reduce/</guid>
+        <link>https://goyalankit.github.io/notez/map-reduce/os/2014/11/06/map-reduce/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/map-reduce/os/2014/11/06/map-reduce/</guid>
         
         
         <category>map-reduce</category>
@@ -490,8 +490,8 @@ reduce (k2, list(v2)) -&amp;gt; list(v2)
 &lt;h3&gt;State Machine Replication&lt;/h3&gt;
 </description>
         <pubDate>Wed, 29 Oct 2014 14:57:37 -0700</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</guid>
+        <link>https://goyalankit.github.io/notez/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</guid>
         
         
         <category>paxos</category>
@@ -530,8 +530,8 @@ g++ -MM main.cpp -std&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;gnu++11
 &lt;p&gt;diction - spell checker&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 Oct 2014 10:44:03 -0700</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/make/shell/2014/10/27/make-notes/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/make/shell/2014/10/27/make-notes/</guid>
+        <link>https://goyalankit.github.io/notez/make/shell/2014/10/27/make-notes/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/make/shell/2014/10/27/make-notes/</guid>
         
         
         <category>make</category>
@@ -579,8 +579,8 @@ database - serializability. memory system: read/write.&lt;/p&gt;
 &lt;p&gt;http://www.cs.rochester.edu/courses/254/fall2013/notes/12-concurrency&lt;/p&gt;
 </description>
         <pubDate>Thu, 23 Oct 2014 10:38:21 -0700</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/os/concurrency/2014/10/23/concurrency/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/os/concurrency/2014/10/23/concurrency/</guid>
+        <link>https://goyalankit.github.io/notez/os/concurrency/2014/10/23/concurrency/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/os/concurrency/2014/10/23/concurrency/</guid>
         
         
         <category>os</category>
@@ -690,8 +690,8 @@ printf(&amp;quot;Difference of %d and %d is %d&amp;quot;, i, j, sub(i, j));
 &lt;/ol&gt;
 </description>
         <pubDate>Fri, 17 Oct 2014 17:25:26 -0700</pubDate>
-        <link>https://goyalankit.github.io/jekyll-lambda/linking/compilers/2014/10/17/static-and-dynamic-linking/</link>
-        <guid isPermaLink="true">https://goyalankit.github.io/jekyll-lambda/linking/compilers/2014/10/17/static-and-dynamic-linking/</guid>
+        <link>https://goyalankit.github.io/notez/linking/compilers/2014/10/17/static-and-dynamic-linking/</link>
+        <guid isPermaLink="true">https://goyalankit.github.io/notez/linking/compilers/2014/10/17/static-and-dynamic-linking/</guid>
         
         
         <category>linking</category>
