@@ -3,240 +3,240 @@
   
   
   <url>
-    <loc>https://goyalankit.github.io/os/2014/11/17/concurrent-objects/</loc>
+    <loc>https://goyalankit.github.io/notez/os/2014/11/17/concurrent-objects/</loc>
     <lastmod>2014-11-17T16:40:16-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/papi/hpc/2014/11/12/papi-native-hardware-counters/</loc>
+    <loc>https://goyalankit.github.io/notez/papi/hpc/2014/11/12/papi-native-hardware-counters/</loc>
     <lastmod>2014-11-12T14:11:50-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/11/11/fast-paxos/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/11/11/fast-paxos/</loc>
     <lastmod>2014-11-11T13:10:06-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/ruby/2014/11/06/ruby-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/ruby/2014/11/06/ruby-notes/</loc>
     <lastmod>2014-11-06T19:50:50-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</loc>
+    <loc>https://goyalankit.github.io/notez/os/spanner/distributed-database/2014/11/06/spanner-googles-globally-distributed-database/</loc>
     <lastmod>2014-11-06T16:47:50-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/map-reduce/os/2014/11/06/map-reduce/</loc>
+    <loc>https://goyalankit.github.io/notez/map-reduce/os/2014/11/06/map-reduce/</loc>
     <lastmod>2014-11-06T10:31:15-08:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/paxos/%22distributed/systems%22/2014/10/29/paxos-notes/</loc>
     <lastmod>2014-10-29T14:57:37-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/make/shell/2014/10/27/make-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/make/shell/2014/10/27/make-notes/</loc>
     <lastmod>2014-10-27T10:44:03-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/concurrency/2014/10/23/concurrency/</loc>
+    <loc>https://goyalankit.github.io/notez/os/concurrency/2014/10/23/concurrency/</loc>
     <lastmod>2014-10-23T10:38:21-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/linking/compilers/2014/10/17/static-and-dynamic-linking/</loc>
+    <loc>https://goyalankit.github.io/notez/linking/compilers/2014/10/17/static-and-dynamic-linking/</loc>
     <lastmod>2014-10-17T17:25:26-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/process/notes/2014/10/15/process-address-space/</loc>
+    <loc>https://goyalankit.github.io/notez/os/process/notes/2014/10/15/process-address-space/</loc>
     <lastmod>2014-10-15T16:40:53-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/</loc>
+    <loc>https://goyalankit.github.io/notez/os/lab/memory/loading/2014/10/14/program-loading-and-memory-mapping/</loc>
     <lastmod>2014-10-14T13:40:27-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/java/basics/2014/10/13/java-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/java/basics/2014/10/13/java-notes/</loc>
     <lastmod>2014-10-13T11:07:23-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/10/09/device-drivers/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/10/09/device-drivers/</loc>
     <lastmod>2014-10-09T14:34:14-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/filesystem/gfs/os/2014/10/09/google-file-system/</loc>
+    <loc>https://goyalankit.github.io/notez/filesystem/gfs/os/2014/10/09/google-file-system/</loc>
     <lastmod>2014-10-09T10:37:40-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/10/02/memory-resource-management-in-vmware-esx-server/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/10/02/memory-resource-management-in-vmware-esx-server/</loc>
     <lastmod>2014-10-02T20:35:46-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/26/writing-my-own-networked-file-system/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/26/writing-my-own-networked-file-system/</loc>
     <lastmod>2014-09-26T13:48:45-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/linux/filesystem/2014/09/25/log-structured-file-system/</loc>
+    <loc>https://goyalankit.github.io/notez/linux/filesystem/2014/09/25/log-structured-file-system/</loc>
     <lastmod>2014-09-25T12:37:15-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/xen/2014/09/23/xen-the-art-of-virtualization/</loc>
+    <loc>https://goyalankit.github.io/notez/xen/2014/09/23/xen-the-art-of-virtualization/</loc>
     <lastmod>2014-09-23T11:03:46-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/20/scheduling-basics/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/20/scheduling-basics/</loc>
     <lastmod>2014-09-20T14:49:25-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/15/practical-cgroups/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/15/practical-cgroups/</loc>
     <lastmod>2014-09-15T18:43:56-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/linux/cgroups/2014/09/15/cgroup-basics/</loc>
+    <loc>https://goyalankit.github.io/notez/linux/cgroups/2014/09/15/cgroup-basics/</loc>
     <lastmod>2014-09-15T17:08:43-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/12/precise-cache-miss-analysis/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/12/precise-cache-miss-analysis/</loc>
     <lastmod>2014-09-12T10:01:54-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/12/cache-basics/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/12/cache-basics/</loc>
     <lastmod>2014-09-12T09:40:19-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/paper/2014/09/10/threads-and-i-slash-o-in-the-synthesis-kernel/</loc>
+    <loc>https://goyalankit.github.io/notez/os/paper/2014/09/10/threads-and-i-slash-o-in-the-synthesis-kernel/</loc>
     <lastmod>2014-09-10T20:22:42-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/09/file-system-continued/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/09/file-system-continued/</loc>
     <lastmod>2014-09-09T13:56:30-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/formal/verification/2014/09/09/verification-by-model-checking/</loc>
+    <loc>https://goyalankit.github.io/notez/formal/verification/2014/09/09/verification-by-model-checking/</loc>
     <lastmod>2014-09-09T13:28:31-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/paper/2014/09/07/exokernel-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/os/paper/2014/09/07/exokernel-notes/</loc>
     <lastmod>2014-09-07T13:34:49-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/os/basics/2014/09/04/basic-os-concepts/</loc>
+    <loc>https://goyalankit.github.io/notez/os/basics/2014/09/04/basic-os-concepts/</loc>
     <lastmod>2014-09-04T19:08:52-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/09/04/kernel-compilation-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/09/04/kernel-compilation-notes/</loc>
     <lastmod>2014-09-04T13:57:47-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/unix/filesystem/2014/09/04/slash-udev-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/unix/filesystem/2014/09/04/slash-udev-notes/</loc>
     <lastmod>2014-09-04T00:13:15-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/unix/filesystem/2014/09/02/the-unix-time-sharing-system-notes/</loc>
+    <loc>https://goyalankit.github.io/notez/unix/filesystem/2014/09/02/the-unix-time-sharing-system-notes/</loc>
     <lastmod>2014-09-02T22:19:07-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/2014/08/31/unique-abbreviation-for-a-list-of-words/</loc>
+    <loc>https://goyalankit.github.io/notez/2014/08/31/unique-abbreviation-for-a-list-of-words/</loc>
     <lastmod>2014-08-31T19:11:51-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/cpp/pointers/2014/08/31/swap-using-reference/</loc>
+    <loc>https://goyalankit.github.io/notez/cpp/pointers/2014/08/31/swap-using-reference/</loc>
     <lastmod>2014-08-31T19:01:18-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/java/hello/2014/08/31/hola-mundo/</loc>
+    <loc>https://goyalankit.github.io/notez/java/hello/2014/08/31/hola-mundo/</loc>
     <lastmod>2014-08-31T18:29:11-07:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   
   <url>
-    <loc>https://goyalankit.github.io/404.html</loc>
-    <lastmod>2015-11-14T01:25:36-08:00</lastmod>
+    <loc>https://goyalankit.github.io/notez/404.html</loc>
+    <lastmod>2015-11-14T01:32:07-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/about/</loc>
-    <lastmod>2015-11-14T01:25:36-08:00</lastmod>
+    <loc>https://goyalankit.github.io/notez/about/</loc>
+    <lastmod>2015-11-14T01:32:07-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/</loc>
-    <lastmod>2015-11-14T01:25:36-08:00</lastmod>
+    <loc>https://goyalankit.github.io/notez/</loc>
+    <lastmod>2015-11-14T01:32:07-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>https://goyalankit.github.io/tags/</loc>
-    <lastmod>2015-11-14T01:25:36-08:00</lastmod>
+    <loc>https://goyalankit.github.io/notez/tags/</loc>
+    <lastmod>2015-11-14T01:32:07-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
